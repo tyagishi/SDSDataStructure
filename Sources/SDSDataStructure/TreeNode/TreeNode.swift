@@ -28,6 +28,7 @@ public class TreeNode<T>: Identifiable, ObservableObject {
     }
 
     public func addChild(_ node: TreeNode<T>, index: Int = -1) {
+        self.objectWillChange.send()
         if index == -1 {
             children.append(node)
         } else {
@@ -80,6 +81,7 @@ extension TreeNode where T: Equatable {
     public func removeChild(_ node: TreeNode<T>) -> TreeNode<T>? {
         guard let index = children.firstIndex(where: {$0.value == node.value}) else { return nil }
         node.parent = nil
+        self.objectWillChange.send()
         return children.remove(at: index)
     }
     public func indexPath() -> IndexPath {

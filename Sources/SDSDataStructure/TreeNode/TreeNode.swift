@@ -75,6 +75,11 @@ public class TreeNode<T>: Identifiable, ObservableObject {
         if parentOfNode.id == self.id { return true }
         return self.isAncestor(of: parentOfNode)
     }
+    
+    public func rootNode() -> TreeNode<T> {
+        guard let parent = self.parent else { return self }
+        return parent.rootNode()
+    }
 }
 
 extension TreeNode {

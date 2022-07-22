@@ -40,6 +40,13 @@ public class TreeNode<T>: Identifiable, ObservableObject {
         }
         node.parent = self
     }
+    
+    public func addChildren(_ children:[TreeNode]) {
+        for child in children {
+            addChild(child)
+        }
+    }
+
     public func node(id: TreeNode<T>.ID) -> TreeNode<T>? {
         if id == self.id {
             return self

@@ -77,13 +77,15 @@ public class TreeNode<T>: Identifiable, ObservableObject {
     }
 }
 
-extension TreeNode where T: Equatable {
+extension TreeNode {
     public func removeChild(_ node: TreeNode<T>) -> TreeNode<T>? {
-        guard let index = children.firstIndex(where: {$0.value == node.value}) else { return nil }
+        guard let index = children.firstIndex(where: {$0.id == node.id}) else { return nil }
         node.parent = nil
         self.objectWillChange.send()
         return children.remove(at: index)
     }
+}
+extension TreeNode {
     public func indexPath() -> IndexPath {
         guard let parent = parent else { return IndexPath() } // super root has index: 0
         if self.id == parent.id {
@@ -92,7 +94,7 @@ extension TreeNode where T: Equatable {
         }
         let parentIndex = parent.indexPath()
         
-        guard let myIndex = parent.children.firstIndex(where: {$0.value == self.value}) else { fatalError("unowned child") }
+        guard let myIndex = parent.children.firstIndex(where: {$0.id == self.id}) else { fatalError("unowned child") }
         
         return parentIndex.appending(myIndex)
     }
@@ -135,7 +137,7 @@ extension TreeNode where T: Equatable {
     }
 }
 
-extension TreeNode where T: Equatable {
+extension TreeNode {
     public func move(from: IndexPath, to: IndexPath) {
         if from == to { return }
         print("move")

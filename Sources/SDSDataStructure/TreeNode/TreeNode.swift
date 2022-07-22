@@ -14,14 +14,14 @@ public class TreeNode<T>: Identifiable, ObservableObject {
     public weak var parent: TreeNode?
     public var children = [TreeNode<T>]()
 
-    public init(value: T) {
-        self.id = UUID()
+    public init(id: UUID = UUID(), value: T) {
+        self.id = id
         self.value = value
         self.parent = nil
     }
 
-    public init(value: T, children: [TreeNode]) {
-        self.id = UUID()
+    public init(id: UUID = UUID(), value: T, children: [TreeNode]) {
+        self.id = id
         self.value = value
         self.children = children
         _ = children.map({$0.parent = self})

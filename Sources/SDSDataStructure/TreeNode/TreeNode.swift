@@ -7,7 +7,19 @@
 
 import Foundation
 
-public class TreeNode<T>: Identifiable, ObservableObject {
+extension Collection {
+    subscript(safe index: Index) -> Element? {
+        startIndex <= index && index < endIndex ? self[index] : nil
+    }
+}
+public class TreeNode<T>: Identifiable, Hashable ,ObservableObject {
+    public static func == (lhs: TreeNode<T>, rhs: TreeNode<T>) -> Bool {
+        lhs.id == rhs.id
+    }
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
+    
     public var id: UUID
     public var value: T
 
@@ -87,6 +99,29 @@ public class TreeNode<T>: Identifiable, ObservableObject {
         guard let parent = self.parent else { return self }
         return parent.rootNode()
     }
+    public func nextNodeInDFS() -> TreeNode<T>? {
+        let currentIndex = self.indexPath()
+        //guard let currentIndex.count > 0 else { return nil } // root return nil as next node
+        // if I have children, move to first child
+        if let firstChild = self.children.first {
+            return firstChild
+        }
+        guard let parentNode = self.parent else { return nil } // no child, no parent
+        // move to younger brother/sister who share my parent
+        let selfLocalIndex = currentIndex.last!
+        if let bro = parentNode.children[safe: selfLocalIndex + 1] {
+            return bro
+        }
+        
+        // need to go up to parent
+        guard let grandParent = parentNode.parent else { return nil }
+        let parentIndex = parentNode.indexPath()
+        if let uncle = grandParent.children[safe: parentIndex.last! + 1] {
+            return uncle
+        }
+
+        return nil
+    }
 }
 
 extension TreeNode {
@@ -98,6 +133,11 @@ extension TreeNode {
     }
 }
 extension TreeNode {
+    public func localIndexUnderMyParent() -> Int? {
+        guard let parent = self.parent else { return nil } // no parent, no index
+        return parent.children.firstIndex(where: {$0.id == self.id})
+    }
+    
     public func indexPath() -> IndexPath {
         guard let parent = parent else { return IndexPath() } // super root has index: 0
         if self.id == parent.id {
@@ -112,11 +152,13 @@ extension TreeNode {
     }
 }
 
+
+
 extension TreeNode {
-    public func node(at indexPath: IndexPath) -> TreeNode {
+    public func node(at indexPath: IndexPath) -> TreeNode? {
         if indexPath.count == 0 { return self }
         if indexPath.count == 1 {
-            return children[indexPath.first!]
+            return children[safe: indexPath.first!]
         }
         let firstIndex = indexPath.first!
         let nextIndexPath = indexPath[1...]
@@ -152,17 +194,12 @@ extension TreeNode where T: Equatable {
 extension TreeNode {
     public func move(from: IndexPath, to: IndexPath) {
         if from == to { return }
-        print("move")
+        guard let fromNode = self.node(at: from),
+              let newParentNode = self.node(at: to.dropLast()) else { return }
         self.objectWillChange.send()
-        let fromNode = self.node(at: from)
-        //print(fromNode.value)
-        var newParent = to
-        newParent.removeLast()
-        let newParentNode = self.node(at: newParent)
         _ = fromNode.parent?.removeChild(fromNode)
         let insertIndex = to.last!
         newParentNode.addChild(fromNode, index: insertIndex)
-        //print(newParentNode.value)
     }
 }
 

@@ -26,13 +26,7 @@ public class TreeNode<T>: Identifiable, Hashable ,ObservableObject {
     public weak var parent: TreeNode?
     public var children = [TreeNode<T>]()
     
-    public init(id: UUID = UUID(), value: T) {
-        self.id = id
-        self.value = value
-        self.parent = nil
-    }
-    
-    public init(id: UUID = UUID(), value: T, children: [TreeNode]) {
+    public init(id: UUID = UUID(), value: T, children: [TreeNode] = []) {
         self.id = id
         self.value = value
         self.children = children

@@ -22,23 +22,23 @@ public class TreeNode<T>: Identifiable, Hashable ,ObservableObject {
     
     public var id: UUID
     public var value: T
-
+    
     public weak var parent: TreeNode?
     public var children = [TreeNode<T>]()
-
+    
     public init(id: UUID = UUID(), value: T) {
         self.id = id
         self.value = value
         self.parent = nil
     }
-
+    
     public init(id: UUID = UUID(), value: T, children: [TreeNode]) {
         self.id = id
         self.value = value
         self.children = children
         _ = children.map({$0.parent = self})
     }
-
+    
     public func addChild(_ node: TreeNode<T>, index: Int = -1) {
         self.objectWillChange.send()
         if index == -1 {
@@ -58,7 +58,7 @@ public class TreeNode<T>: Identifiable, Hashable ,ObservableObject {
             addChild(child)
         }
     }
-
+    
     public func node(id: TreeNode<T>.ID) -> TreeNode<T>? {
         if id == self.id {
             return self
@@ -82,7 +82,7 @@ public class TreeNode<T>: Identifiable, Hashable ,ObservableObject {
         }
         return sum
     }
-
+    
     public func isParent(of node: TreeNode<T>) -> Bool {
         guard let parentOfNode = node.parent else { return false } // node is rootNode
         if parentOfNode.id == self.id { return true }
@@ -119,8 +119,23 @@ public class TreeNode<T>: Identifiable, Hashable ,ObservableObject {
         if let uncle = grandParent.children[safe: parentIndex.last! + 1] {
             return uncle
         }
-
         return nil
+    }
+    
+    // note: root.prevNodeInDFS() will return nil
+    public func prevNodeInDFS() -> TreeNode<T>? {
+        guard let parentNode = self.parent else { return nil }
+        let selfLocalIndex = self.indexPath().last!
+        if let bro = parentNode.children[safe: selfLocalIndex - 1] {
+            return bro.lastNodeInDFS()
+        }
+        return parentNode
+        
+    }
+    
+    public func lastNodeInDFS() -> TreeNode<T>? {
+        if let lastChild = self.children.last?.lastNodeInDFS() { return lastChild }
+        return self
     }
 }
 

@@ -45,6 +45,14 @@ public class BinaryTreeNode<T>: Identifiable, Hashable ,ObservableObject {
     public var isLeaf: Bool {
         return left == nil && right == nil
     }
+    
+    public var rootNode: BinaryTreeNode<T> {
+        if let parent = self.parent {
+            return parent.rootNode
+        }
+        return self
+    }
+    
 //
 //    public func addChild(_ node: BinaryTreeNode<T>, index: Int = -1) {
 //        self.objectWillChange.send()

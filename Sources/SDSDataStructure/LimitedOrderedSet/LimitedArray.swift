@@ -7,7 +7,7 @@
 
 import Foundation
 
-public class LimitedArray<T: Identifiable>: ObservableObject {
+public class LimitedOrderedSet<T: Identifiable>: ObservableObject {
     @Published public private(set) var array: [T]
     let max: Int
     

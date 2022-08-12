@@ -56,8 +56,8 @@ public class LimitedOrderedSet<T: Identifiable>: ObservableObject {
     }
 }
 
-extension LimitedArray: Equatable where T: Equatable {
-    public static func == (lhs: LimitedArray<T>, rhs: LimitedArray<T>) -> Bool {
+extension LimitedOrderedSet: Equatable where T: Equatable {
+    public static func == (lhs: LimitedOrderedSet<T>, rhs: LimitedOrderedSet<T>) -> Bool {
         return lhs.array == rhs.array
     }
     

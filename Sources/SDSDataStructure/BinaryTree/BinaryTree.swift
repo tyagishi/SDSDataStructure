@@ -7,6 +7,16 @@
 
 import Foundation
 
+/// binary tree node
+///
+/// to represent binary tree with using T as node value
+///
+/// node has optional left and optional right for its child
+/// node has optional parent and if it is null, it must be root node
+///
+/// note: currently child node's parent should be maintained by user
+/// only setLeft/setRight will set the new child's parent, but no maintain about old child's parent info
+/// 
 public class BinaryTreeNode<T>: Identifiable, Hashable ,ObservableObject {
     public static func == (lhs: BinaryTreeNode<T>, rhs: BinaryTreeNode<T>) -> Bool {
         lhs.id == rhs.id

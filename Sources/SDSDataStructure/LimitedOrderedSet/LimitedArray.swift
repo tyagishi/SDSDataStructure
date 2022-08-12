@@ -7,6 +7,13 @@
 
 import Foundation
 
+/// ordered set with limited number
+///
+/// to represent ordered collection with limited number
+///
+/// note: currently LimitedOrderedSet uses Array as backing store
+///       may switch to OrderedSet in swift-collections in the future
+///
 public class LimitedOrderedSet<T: Identifiable>: ObservableObject {
     @Published public private(set) var array: [T]
     let max: Int

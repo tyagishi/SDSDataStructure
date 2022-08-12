@@ -12,6 +12,14 @@ extension Collection {
         startIndex <= index && index < endIndex ? self[index] : nil
     }
 }
+
+/// tree node
+///
+/// to represent tree with using T as node value
+///
+/// node has children as child nodes
+/// node has optional parent and if it is null, it must be root node
+///
 public class TreeNode<T>: Identifiable, Hashable ,ObservableObject {
     public static func == (lhs: TreeNode<T>, rhs: TreeNode<T>) -> Bool {
         lhs.id == rhs.id

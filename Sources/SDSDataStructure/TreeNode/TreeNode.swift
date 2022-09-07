@@ -20,12 +20,9 @@ extension Collection {
 /// node has children as child nodes
 /// node has optional parent and if it is null, it must be root node
 ///
-public class TreeNode<T>: Identifiable, Hashable, Equatable ,ObservableObject {
+public class TreeNode<T>: NSObject, Identifiable, ObservableObject {
     public static func == (lhs: TreeNode<T>, rhs: TreeNode<T>) -> Bool {
         lhs.id == rhs.id
-    }
-    public func hash(into hasher: inout Hasher) {
-        hasher.combine(id)
     }
     
     public var id: UUID
@@ -38,6 +35,7 @@ public class TreeNode<T>: Identifiable, Hashable, Equatable ,ObservableObject {
         self.id = id
         self.value = value
         self.children = children
+        super.init()
         _ = children.map({$0.parent = self})
     }
     
@@ -184,15 +182,15 @@ extension TreeNode {
 }
 
 
-extension TreeNode: CustomStringConvertible {
-    public var description: String {
-        var s = "\(value)"
-        if !children.isEmpty {
-            s += " {" + children.map { $0.description }.joined(separator: ", ") + "}"
-        }
-        return s
-    }
-}
+//extension TreeNode: CustomStringConvertible {
+//    override var description: String {
+//        var s = "\(value)"
+//        if !children.isEmpty {
+//            s += " {" + children.map { $0.description }.joined(separator: ", ") + "}"
+//        }
+//        return s
+//    }
+//}
 
 extension TreeNode where T: Equatable {
     public func search(_ value: T) -> TreeNode? {

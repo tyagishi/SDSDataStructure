@@ -58,7 +58,6 @@ public class TreeNode<T>: NSObject, Identifiable, ObservableObject {
             addChild(child)
         }
     }
-    
     public func node(id: TreeNode<T>.ID) -> TreeNode<T>? {
         if id == self.id {
             return self
@@ -140,6 +139,7 @@ public class TreeNode<T>: NSObject, Identifiable, ObservableObject {
 }
 
 extension TreeNode {
+    @discardableResult
     public func removeChild(_ node: TreeNode<T>) -> TreeNode<T>? {
         guard let index = children.firstIndex(where: {$0.id == node.id}) else { return nil }
         node.parent = nil

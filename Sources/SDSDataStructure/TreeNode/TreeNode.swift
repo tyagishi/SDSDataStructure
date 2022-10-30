@@ -39,25 +39,7 @@ public class TreeNode<T>: NSObject, Identifiable, ObservableObject {
         _ = children.map({$0.parent = self})
     }
     
-    public func addChild(_ node: TreeNode<T>, index: Int = -1) {
-        self.objectWillChange.send()
-        if index == -1 {
-            children.append(node)
-        } else {
-            if children.count <= index {
-                children.append(node)
-            } else {
-                children.insert(node, at: index)
-            }
-        }
-        node.parent = self
-    }
-    
-    public func addChildren(_ children:[TreeNode]) {
-        for child in children {
-            addChild(child)
-        }
-    }
+
     public func node(id: TreeNode<T>.ID) -> TreeNode<T>? {
         if id == self.id {
             return self
@@ -98,6 +80,10 @@ public class TreeNode<T>: NSObject, Identifiable, ObservableObject {
         guard let parent = self.parent else { return self }
         return parent.rootNode()
     }
+}
+
+// MARK: iteration in Depth First Search
+extension TreeNode {
     public func nextNodeInDFS() -> TreeNode<T>? {
         let currentIndex = self.indexPath()
         //guard let currentIndex.count > 0 else { return nil } // root return nil as next node
@@ -131,22 +117,12 @@ public class TreeNode<T>: NSObject, Identifiable, ObservableObject {
         return parentNode
         
     }
-    
     public func lastNodeInDFS() -> TreeNode<T>? {
         if let lastChild = self.children.last?.lastNodeInDFS() { return lastChild }
         return self
     }
 }
 
-extension TreeNode {
-    @discardableResult
-    public func removeChild(_ node: TreeNode<T>) -> TreeNode<T>? {
-        guard let index = children.firstIndex(where: {$0.id == node.id}) else { return nil }
-        node.parent = nil
-        self.objectWillChange.send()
-        return children.remove(at: index)
-    }
-}
 extension TreeNode {
     public func localIndexUnderMyParent() -> Int? {
         guard let parent = self.parent else { return nil } // no parent, no index
@@ -166,8 +142,6 @@ extension TreeNode {
         return parentIndex.appending(myIndex)
     }
 }
-
-
 
 extension TreeNode {
     public func node(at indexPath: IndexPath) -> TreeNode? {
@@ -203,18 +177,6 @@ extension TreeNode where T: Equatable {
             }
         }
         return nil
-    }
-}
-
-extension TreeNode {
-    public func move(from: IndexPath, to: IndexPath) {
-        if from == to { return }
-        guard let fromNode = self.node(at: from),
-              let newParentNode = self.node(at: to.dropLast()) else { return }
-        self.objectWillChange.send()
-        _ = fromNode.parent?.removeChild(fromNode)
-        let insertIndex = to.last!
-        newParentNode.addChild(fromNode, index: insertIndex)
     }
 }
 

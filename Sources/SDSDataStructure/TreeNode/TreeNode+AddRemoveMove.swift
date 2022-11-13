@@ -46,4 +46,19 @@ extension TreeNode {
         let insertIndex = to.last!
         newParentNode.addChild(fromNode, index: insertIndex)
     }
+
+    public func replaceNodeValue(_ newValue: T) {
+        self.objectWillChange.send()
+        self.value = newValue
+    }
+
+    // not used yet
+//    public func replaceNode(_ node: TreeNode<T>, newNode: TreeNode<T>) {
+//        self.objectWillChange.send()
+//        if let nodeParent = node.parent {
+//            newNode.parent = nodeParent
+//        }
+//        newNode.addChildren(node.children)
+//        node.parent = nil
+//    }
 }

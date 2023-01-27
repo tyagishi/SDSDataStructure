@@ -6,12 +6,14 @@
 //
 
 import Foundation
+import Combine
 
 extension Collection {
     subscript(safe index: Index) -> Element? {
         startIndex <= index && index < endIndex ? self[index] : nil
     }
 }
+
 
 /// tree node
 ///
@@ -21,6 +23,11 @@ extension Collection {
 /// node has optional parent and if it is null, it must be root node
 ///
 public class TreeNode<T>: NSObject, Identifiable, ObservableObject {
+    public enum TreeNodeChange {
+        case addChild(childNodeID: TreeNode.ID, parentID:  TreeNode.ID)
+        case removeChild(childNodeID:  TreeNode.ID, parentID:  TreeNode.ID?)
+        case contentUpdated(nodeID:  TreeNode.ID)
+    }
     public static func == (lhs: TreeNode<T>, rhs: TreeNode<T>) -> Bool {
         lhs.id == rhs.id
     }
@@ -30,7 +37,10 @@ public class TreeNode<T>: NSObject, Identifiable, ObservableObject {
     
     public weak var parent: TreeNode?
     public var children: [TreeNode<T>]
-    
+
+    public let objectDidChange = PassthroughSubject<TreeNodeChange,Never>()
+    public var cancellables: Set<AnyCancellable> = Set()
+
     public init(id: UUID = UUID(), value: T, children: [TreeNode] = []) {
         self.id = id
         self.value = value

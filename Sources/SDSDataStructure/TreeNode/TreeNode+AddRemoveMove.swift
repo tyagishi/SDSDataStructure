@@ -21,6 +21,7 @@ extension TreeNode {
             }
         }
         node.parent = self
+        self.objectDidChange.send(.addChild(childNodeID: node.id, parentID: self.id))
     }
 
     public func addChildren(_ children:[TreeNode]) {
@@ -34,6 +35,9 @@ extension TreeNode {
         guard let index = children.firstIndex(where: {$0.id == node.id}) else { return nil }
         node.parent = nil
         self.objectWillChange.send()
+        defer {
+            self.objectDidChange.send(.removeChild(childNodeID: node.id, parentID: self.id))
+        }
         return children.remove(at: index)
     }
 
@@ -50,6 +54,7 @@ extension TreeNode {
     public func replaceNodeValue(_ newValue: T) {
         self.objectWillChange.send()
         self.value = newValue
+        self.objectDidChange.send(.contentUpdated(nodeID: self.id))
     }
 
     // not used yet

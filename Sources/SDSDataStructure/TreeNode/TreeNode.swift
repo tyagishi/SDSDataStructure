@@ -177,6 +177,7 @@ extension TreeNode {
 //}
 
 extension TreeNode where T: Equatable {
+    // depth-first search
     public func search(_ value: T) -> TreeNode? {
         if value == self.value {
             return self
@@ -185,6 +186,14 @@ extension TreeNode where T: Equatable {
             if let found = child.search(value) {
                 return found
             }
+        }
+        return nil
+    }
+    // depth-first search
+    public func search(match: @escaping (TreeNode) -> Bool) -> TreeNode? {
+        if match(self) == true { return self }
+        for child in children {
+            if let node = child.search(match: match) { return node }
         }
         return nil
     }

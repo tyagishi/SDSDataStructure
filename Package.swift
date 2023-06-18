@@ -6,7 +6,7 @@ import PackageDescription
 let package = Package(
     name: "SDSDataStructure",
     platforms: [
-        .macOS(.v10_15),
+        .macOS(.v11),
         .iOS(.v15)
     ],
     products: [

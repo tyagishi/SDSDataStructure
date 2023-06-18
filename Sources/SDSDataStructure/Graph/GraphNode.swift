@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import OSLog
 
 class GraphNode<Element> where Element: Equatable {
     var nodeValue: Element
@@ -54,6 +55,24 @@ class GraphNode<Element> where Element: Equatable {
             if process(nbrEdge, nbrNode, localValue, pastEdges, newPastNodes) == .stop { continue }
 
             nbrNode.dfs(localValue, prepForChildren, pastEdges: newPastEdges, pastNodes: newPastNodes, process)
+        }
+    }
+
+    func bfs(prepChild: @escaping (_ node: GraphNode<Element>,
+                                   _ traceEdges: inout [(GraphEdge<Element>, GraphNode<Element>)] ) -> Void,
+             process: @escaping (_ newEdge: GraphEdge<Element>,_ newNode: GraphNode<Element>) -> StopKeep) {
+        var dequeue: Dequeue<(GraphEdge<Element>, GraphNode<Element>)> = Dequeue()
+
+        var traceEdges: [(GraphEdge<Element>, GraphNode<Element>)] = []
+        prepChild(self, &traceEdges)
+        dequeue.addLasts(traceEdges)
+
+        while let (traceEdge, nextNode) = dequeue.popFirst() {
+            if process(traceEdge, nextNode) == .stop { break }
+
+            var nextTraceEdge: [(GraphEdge<Element>, GraphNode<Element>)] = []
+            prepChild(nextNode, &nextTraceEdge)
+            dequeue.addLasts(nextTraceEdge)
         }
     }
 

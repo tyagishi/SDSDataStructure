@@ -19,13 +19,13 @@ public struct Dequeue<Element> {
     }
     public mutating func popLast() -> Element? {
         guard let last = _array.last else { return nil }
-        _ = _array.dropLast()
+        _ = _array.remove(at: _array.count-1)
         return last
     }
 
     public mutating func popFirst() -> Element? {
         guard let first = _array.first else { return nil }
-        _ = _array.dropFirst()
+        _ = _array.remove(at: 0)
         return first
     }
     public var isEmpty: Bool {
@@ -37,12 +37,12 @@ public struct Dequeue<Element> {
 }
 
 extension Dequeue {
-    public mutating func addLast(_ elements: some Sequence<Element>) {
+    public mutating func addLasts(_ elements: some Sequence<Element>) {
         for element in elements {
             addLast(element)
         }
     }
-    public mutating func addFirst(_ elements: some Sequence<Element>) {
+    public mutating func addFirsts(_ elements: some Sequence<Element>) {
         for element in elements.reversed() {
             addFirst(element)
         }

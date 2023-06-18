@@ -6,6 +6,12 @@
 //
 
 import Foundation
+import OSLog
+
+extension OSLog {
+    static var graphLogger = Logger(subsystem: "com.smalldesksoftware.datastructure", category: "graph")
+}
+
 
 class Graph<Element> where Element: Hashable {
     var nodes: [Element: GraphNode<Element>] = [:]

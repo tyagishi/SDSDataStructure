@@ -8,7 +8,7 @@
 import XCTest
 @testable import SDSDataStructure
 
-final class Graph_dfs_bitComplecated: XCTestCase {
+final class Graph_dfs_ComplexTests: XCTestCase {
     var sut = Graph<Int>()
     var storedNode: [Int: GraphNode<Int>] = [:]
     var storedEdge: [Index2D<Int>: GraphEdge<Int>] = [:]

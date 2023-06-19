@@ -1,89 +1,50 @@
-////
-////  Graph_bfs_ComplexTests.swift
-////
-////  Created by : Tomoaki Yagishita on 2023/06/18
-////  © 2023  SmallDeskSoftware
-////
 //
-//import XCTest
-//@testable import SDSDataStructure
+//  Graph_bfs_ComplexTests.swift
 //
-//final class Graph_bfs_ComplexTests: XCTestCase {
-//    var sut = Graph<Int>()
-//    var storedNode: [Int: GraphNode<Int>] = [:]
-//    var storedEdge: [Index2D<Int>: GraphEdge<Int>] = [:]
+//  Created by : Tomoaki Yagishita on 2023/06/18
+//  © 2023  SmallDeskSoftware
 //
-//    func createNode() {
-//        for node in 1...4 {
-//            storedNode[node] = sut.addNode(node)
-//        }
-//    }
-//
-//    func createNoLoopEdge() {
-//        let edges = [(1,2), (2,3), (2,4), (3, 4)]
-//        for edge in edges {
-//            let index = Index2D(edge.0, edge.1)
-//            storedEdge[index] = sut.addEdge(from: sut.nodeCIN(edge.0), to: sut.nodeCIN(edge.1))
-//        }
-//    }
-//
-//    func test_bfs_nodeHasDifferentDepth() async throws {
-//        createNode()
-//        createNoLoopEdge()
-//
-//        let prepEdgeCheck:[Index2D<Int>: [GraphEdge<Int>]] = [ Index2D(1,0): [],
-//                                                               Index2D(2,1): [storedEdge[Index2D(1,2)]!],
-//                                                               Index2D(3,2): [storedEdge[Index2D(1,2)]!, storedEdge[Index2D(2,3)]!],
-//                                                               Index2D(4,2): [storedEdge[Index2D(1,2)]!, storedEdge[Index2D(2,4)]!],
-//                                                               Index2D(4,3): [storedEdge[Index2D(1,2)]!, storedEdge[Index2D(2,3)]!, storedEdge[Index2D(3,4)]!]]
-//        let prepNodeCheck:[Index2D<Int>: [GraphNode<Int>]] = [ Index2D(1,0): [],
-//                                                               Index2D(2,1): [storedNode[1]!],
-//                                                               Index2D(3,2): [storedNode[1]!, storedNode[2]!],
-//                                                               Index2D(4,2): [storedNode[1]!, storedNode[2]!],
-//                                                               Index2D(4,3): [storedNode[1]!, storedNode[2]!, storedNode[3]!]]
-//
-//        let processPastEdgeCheck:[Index2D<Int>: [GraphEdge<Int>]] = [ Index2D(1,0): [],
-//                                                                      Index2D(2,1): [],
-//                                                                      Index2D(3,2): [storedEdge[Index2D(1,2)]!],
-//                                                                      Index2D(4,2): [storedEdge[Index2D(1,2)]!],
-//                                                                      Index2D(4,3): [storedEdge[Index2D(1,2)]!, storedEdge[Index2D(2,3)]!] ]
-//        let processPastNodeCheck:[Index2D<Int>: [GraphNode<Int>]] = [ Index2D(1,0): [],
-//                                                                      Index2D(2,1): [storedNode[1]!],
-//                                                                      Index2D(3,2): [storedNode[1]!, storedNode[2]!],
-//                                                                      Index2D(4,2): [storedNode[1]!, storedNode[2]!],
-//                                                                      Index2D(4,3): [storedNode[1]!, storedNode[2]!, storedNode[3]!]]
-//
-//
-//        var depth = 0
-//
-//
-//        var orderCheck: [Index2D<Int>] = [] // nodeValue, depth
-//
-//        let rootNode = try XCTUnwrap(sut.nodes[1])
-//        orderCheck.append(Index2D(rootNode.nodeValue, 0))
-//
-//        rootNode.bfs(0, { pastNodes, pastEdges, node, traceEdges, value in
-//            print("care node: \(node.nodeValue)")
-//            traceEdges = node.edgeToNext
-//
-//            XCTAssertEqual(pastNodes, prepNodeCheck[Index2D(node.nodeValue, depth)]!)
-//            XCTAssertEqual(pastEdges, prepEdgeCheck[Index2D(node.nodeValue, depth)]!)
-//
-//            print("\(node.nodeValue) has depth: \(depth)")
-//            depth += 1
-//
-//            value += 1
-//        }, pastEdges: [], pastNodes: [], { newEdge, newNode, value, pastEdges, pastNodes in
-//
-////            XCTAssertEqual(pastEdges, processPastEdgeCheck[Index2D(newNode.nodeValue, depth)]!)
-////            XCTAssertEqual(pastNodes, processPastNodeCheck[Index2D(newNode.nodeValue, depth)]!)
-//
-//
-//            orderCheck.append(Index2D(newNode.nodeValue, depth))
-//            return .keepGoing
-//        })
-//
-//        XCTAssertEqual(orderCheck, [Index2D(1,0), Index2D(2,1), Index2D(3,2), Index2D(4,2), Index2D(4,3)])
-//    }
-//
-//}
+
+import XCTest
+@testable import SDSDataStructure
+
+final class Graph_bfs_ComplexTests: XCTestCase {
+    var sut = Graph<Int>()
+    var storedNode: [Int: GraphNode<Int>] = [:]
+    var storedEdge: [Index2D<Int>: GraphEdge<Int>] = [:]
+
+    func createNode() {
+        for node in 1...4 {
+            storedNode[node] = sut.addNode(node)
+        }
+    }
+
+    func createNoLoopEdge() {
+        let edges = [(1,2), (2,3), (2,4), (3, 4)]
+        for edge in edges {
+            let index = Index2D(edge.0, edge.1)
+            storedEdge[index] = sut.addEdge(from: sut.nodeCIN(edge.0), to: sut.nodeCIN(edge.1))
+        }
+    }
+
+    func test_generalBFS_withGraph() async throws {
+        createNode()
+        createNoLoopEdge()
+
+        let rootNode = try XCTUnwrap(sut.nodes[1])
+
+        var orderCheck: [Int] = []
+        orderCheck.append(rootNode.nodeValue)
+
+        bfs(rootNode.nodeValue, prepChild: { nodeValue in
+            let node = self.sut.nodeCIN(nodeValue)
+            return node.edgeToNext.map({ $0.toNode.nodeValue})
+        }, process: { nodeValue in
+            orderCheck.append(nodeValue)
+            return .keepGoing
+        })
+
+        XCTAssertEqual(orderCheck, [1, 2, 3, 4, 4])
+
+    }
+}

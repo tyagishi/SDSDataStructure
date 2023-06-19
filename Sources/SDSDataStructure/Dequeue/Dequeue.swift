@@ -36,6 +36,7 @@ public struct Dequeue<Element> {
     }
 }
 
+#if swift(>=5.9)
 extension Dequeue {
     public mutating func addLasts(_ elements: some Sequence<Element>) {
         for element in elements {
@@ -48,3 +49,4 @@ extension Dequeue {
         }
     }
 }
+#endif

@@ -66,7 +66,24 @@ final class Graph_dfs_SimpleTests: XCTestCase {
         XCTAssertEqual(checkArray, [Index2D(1,0), Index2D(2,1), Index2D(3,2)])
     }
 
+    func test_generalDFS_withGraph() async throws {
+        createNodeSimple()
+        createNoLoopEdgeSimple()
 
+        let rootNode = try XCTUnwrap(sut.nodes[1])
+        
+        var orderCheck: [Int] = []
+        orderCheck.append(rootNode.nodeValue)
+
+        dfs(rootNode.nodeValue, prepChild: { nodeValue in
+            let node = self.sut.nodeCIN(nodeValue)
+            return node.edgeToNext.map({ $0.toNode.nodeValue })
+        }, process: { nodeValue in
+            orderCheck.append(nodeValue)
+            return .keepGoing
+        })
+        XCTAssertEqual(orderCheck, [1, 2, 3])
+    }
 //    func createNoLoopEdge2() {
 //        // 1 - 2
 //        // 1 - 3

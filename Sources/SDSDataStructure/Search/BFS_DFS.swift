@@ -7,6 +7,7 @@
 
 import Foundation
 
+// MARK: bfs v1.0
 func bfs<Index>(_ start: Index,
                 prepChild: @escaping (_ from: Index) -> [Index],
                 process: @escaping (_ index: Index) -> StopKeep) {
@@ -22,6 +23,7 @@ func bfs<Index>(_ start: Index,
     }
 }
 
+// MARK: dfs v1.0
 func dfs<Index>(_ start: Index,
                 prepChild: @escaping (_ from: Index) -> [Index],
                 process: @escaping (_ index: Index) -> StopKeep) {

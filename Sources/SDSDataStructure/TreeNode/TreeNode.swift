@@ -189,6 +189,8 @@ extension TreeNode where T: Equatable {
         }
         return nil
     }
+}
+extension TreeNode {
     // depth-first search
     public func search(match: @escaping (TreeNode) -> Bool) -> TreeNode? {
         if match(self) == true { return self }

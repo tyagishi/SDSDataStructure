@@ -14,6 +14,10 @@ extension Collection {
     }
 }
 
+public protocol ObjectDidChangeProvider {
+    associatedtype ChangeDetailType
+    var objectDidChange: PassthroughSubject<ChangeDetailType, Never> { get }
+}
 
 /// tree node
 ///
@@ -40,6 +44,7 @@ public class TreeNode<T>: NSObject, Identifiable, ObservableObject {
 
     public let objectDidChange = PassthroughSubject<TreeNodeChange,Never>()
     public var cancellables: Set<AnyCancellable> = Set()
+    public var oDCCancellable: AnyCancellable? = nil
 
     public init(id: UUID = UUID(), value: T, children: [TreeNode] = []) {
         self.id = id
@@ -49,6 +54,17 @@ public class TreeNode<T>: NSObject, Identifiable, ObservableObject {
         _ = children.map({$0.parent = self})
     }
     
+    public init(id: UUID = UUID(), value: T, children: [TreeNode] = []) where T: ObjectDidChangeProvider {
+        self.id = id
+        self.value = value
+        self.children = children
+        super.init()
+        _ = children.map({$0.parent = self})
+        self.oDCCancellable = value.objectDidChange
+            .sink{ change in
+                self.objectDidChange.send(TreeNodeChange.contentUpdated(nodeID: self.id))
+            }
+    }
 
     public func node(id: TreeNode<T>.ID) -> TreeNode<T>? {
         if id == self.id {

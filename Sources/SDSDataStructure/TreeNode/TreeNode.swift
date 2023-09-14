@@ -7,6 +7,7 @@
 
 import Foundation
 import Combine
+import OSLog
 
 extension Collection {
     subscript(safe index: Index) -> Element? {
@@ -17,6 +18,10 @@ extension Collection {
 public protocol ObjectDidChangeProvider {
     associatedtype ChangeDetailType
     var objectDidChange: PassthroughSubject<ChangeDetailType, Never> { get }
+}
+
+extension OSLog {
+    static var treeNodeLogger = Logger(subsystem: "com.smalldesksoftware.SDSDataStructure", category: "treeNode")
 }
 
 /// tree node
@@ -54,13 +59,13 @@ public class TreeNode<T>: NSObject, Identifiable, ObservableObject {
         _ = children.map({$0.parent = self})
     }
     
-    public init(id: UUID = UUID(), value: T, children: [TreeNode] = []) where T: ObjectDidChangeProvider {
+    public init(id: UUID = UUID(), observedValue: T, children: [TreeNode] = []) where T: ObjectDidChangeProvider {
         self.id = id
-        self.value = value
+        self.value = observedValue
         self.children = children
         super.init()
         _ = children.map({$0.parent = self})
-        self.oDCCancellable = value.objectDidChange
+        self.oDCCancellable = observedValue.objectDidChange
             .sink{ change in
                 self.objectDidChange.send(TreeNodeChange.contentUpdated(nodeID: self.id))
             }

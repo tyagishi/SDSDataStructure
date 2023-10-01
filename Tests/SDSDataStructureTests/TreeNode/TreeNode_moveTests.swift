@@ -27,7 +27,6 @@ final class TreeNode_moveTests: XCTestCase {
     
     func test_moveUnderSameParent() async throws {
         let root = TreeNode.example()
-        print(root.structureAsString())
         XCTAssertEqual(root.structureAsString(), "_{0,1{10,11,12},2,3,4}")
         
         let fromIndex = IndexPath(indexes: [2]) // GrandChild21
@@ -36,8 +35,31 @@ final class TreeNode_moveTests: XCTestCase {
         
         XCTAssertEqual(root.structureAsString(), "_{0,1{10,11,12},3,2,4}")
     }
+
+    func test_moveUnderSameParent_2() async throws {
+        let root = TreeNode.example()
+        XCTAssertEqual(root.structureAsString(), "_{0,1{10,11,12},2,3,4}")
+        
+        let fromIndex = IndexPath(indexes: [2]) // GrandChild21
+        let toIndex = IndexPath(indexes: [5]) // [4] also will have same meaning
+        root.move(from: fromIndex, to: toIndex)
+        
+        XCTAssertEqual(root.structureAsString(), "_{0,1{10,11,12},3,4,2}")
+    }
     
-    func test_moveToUnderNbrElement() async throws {
+    func test_moveToUnderNbrElement_AsFirst() async throws {
+        let root = TreeNode.example()
+        print(root.structureAsString())
+        XCTAssertEqual(root.structureAsString(), "_{0,1{10,11,12},2,3,4}")
+        
+        let fromIndex = IndexPath(indexes: [2]) // 2
+        let toIndex = IndexPath(indexes: [1,0]) // after 12
+        root.move(from: fromIndex, to: toIndex)
+        
+        XCTAssertEqual(root.structureAsString(), "_{0,1{2,10,11,12},3,4}")
+    }
+    
+    func test_moveToUnderNbrElement_AsLast() async throws {
         let root = TreeNode.example()
         print(root.structureAsString())
         XCTAssertEqual(root.structureAsString(), "_{0,1{10,11,12},2,3,4}")
@@ -48,6 +70,8 @@ final class TreeNode_moveTests: XCTestCase {
         
         XCTAssertEqual(root.structureAsString(), "_{0,1{10,11,12,2},3,4}")
     }
+
+
     func test_moveToParentNbr() async throws {
         let root = TreeNode.example()
         print(root.structureAsString())
@@ -59,4 +83,40 @@ final class TreeNode_moveTests: XCTestCase {
         
         XCTAssertEqual(root.structureAsString(), "_{0,1{10,11},2,12,3,4}")
     }
+    
+    func test_moveSmallTreeToSameDepth_toPrev() async throws {
+        let root = TreeNode.example()
+        print(root.structureAsString())
+        XCTAssertEqual(root.structureAsString(), "_{0,1{10,11,12},2,3,4}")
+        
+        let fromIndex = IndexPath(indexes: [1]) // 12
+        let toIndex = IndexPath(indexes: [0]) // after 2
+        root.move(from: fromIndex, to: toIndex)
+        
+        XCTAssertEqual(root.structureAsString(), "_{1{10,11,12},0,2,3,4}")
+    }
+
+    func test_moveSmallTreeToSameDepth_toLater() async throws {
+        let root = TreeNode.example()
+        print(root.structureAsString())
+        XCTAssertEqual(root.structureAsString(), "_{0,1{10,11,12},2,3,4}")
+        
+        let fromIndex = IndexPath(indexes: [1]) // 12
+        let toIndex = IndexPath(indexes: [4]) // after 2
+        root.move(from: fromIndex, to: toIndex)
+        
+        XCTAssertEqual(root.structureAsString(), "_{0,2,3,4,1{10,11,12}}")
+    }
+
+//    func test_moveSmalLTreeToChild() async throws {
+//        let root = TreeNode.example()
+//        print(root.structureAsString())
+//        XCTAssertEqual(root.structureAsString(), "_{0,1{10,11,12},2,3,4}")
+//        
+//        let fromIndex = IndexPath(indexes: [1]) // 12
+//        let toIndex = IndexPath(indexes: [4]) // after 2
+//        root.move(from: fromIndex, to: toIndex)
+//        
+//        XCTAssertEqual(root.structureAsString(), "_{0,2,3,4,1{10,11,12}}")
+//    }
 }

@@ -186,17 +186,6 @@ extension TreeNode {
     }
 }
 
-
-//extension TreeNode: CustomStringConvertible {
-//    override var description: String {
-//        var s = "\(value)"
-//        if !children.isEmpty {
-//            s += " {" + children.map { $0.description }.joined(separator: ", ") + "}"
-//        }
-//        return s
-//    }
-//}
-
 extension TreeNode where T: Equatable {
     // depth-first search
     public func search(_ value: T) -> TreeNode? {
@@ -222,19 +211,4 @@ extension TreeNode {
     }
 }
 
-extension TreeNode where T == String {
-    static func exampleWithString() -> TreeNode<String> {
-        let rootNode = TreeNode(value: "Root", children: [
-            TreeNode(value: "Child1", children: []),
-            TreeNode(value: "Child2", children: [
-                TreeNode(value: "GrandChild21", children: []),
-                TreeNode(value: "GrandChild22", children: []),
-                TreeNode(value: "GrandChild23", children: []),
-            ]),
-            TreeNode(value: "Child3", children: []),
-            TreeNode(value: "Child4", children: []),
-            TreeNode(value: "Child5", children: []),
-        ])
-        return rootNode
-    }
-}
+

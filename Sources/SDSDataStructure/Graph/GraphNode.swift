@@ -59,10 +59,6 @@ class GraphNode<Element> where Element: Equatable {
     }
 }
 
-enum StopKeep {
-    case stop, keepGoing
-}
-
 extension GraphNode: Equatable where Element: Equatable {
     static func == (lhs: GraphNode<Element>, rhs: GraphNode<Element>) -> Bool { lhs.nodeValue == rhs.nodeValue }
 }

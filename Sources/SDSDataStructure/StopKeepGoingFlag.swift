@@ -6,3 +6,7 @@
 //
 
 import Foundation
+
+public enum StopKeep {
+    case stop, keepGoing
+}

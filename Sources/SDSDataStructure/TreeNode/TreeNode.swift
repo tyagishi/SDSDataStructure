@@ -209,6 +209,13 @@ extension TreeNode {
         }
         return nil
     }
+    /// process all elements in tree along depth-first order
+    /// if process return false, then exit the loop
+    /// - Parameter process: closure for each element
+    public func dfp(_ process: @escaping (TreeNode) -> StopKeep) {
+        if process(self) == .stop { return }
+        for child in children {
+            if process(child) == .stop { return }
+        }
+    }
 }
-
-

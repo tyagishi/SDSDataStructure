@@ -8,9 +8,9 @@
 import Foundation
 
 // MARK: bfs v1.0
-func bfs<Index>(_ start: Index,
-                prepChild: @escaping (_ from: Index) -> [Index],
-                process: @escaping (_ index: Index) -> StopKeep) {
+public func bfs<Index>(_ start: Index,
+                       prepChild: @escaping (_ from: Index) -> [Index],
+                       process: @escaping (_ index: Index) -> StopKeep) {
     var processQueue = Dequeue<Index>()
 
     let nexts = prepChild(start)
@@ -24,9 +24,9 @@ func bfs<Index>(_ start: Index,
 }
 
 // MARK: dfs v1.0
-func dfs<Index>(_ start: Index,
-                prepChild: @escaping (_ from: Index) -> [Index],
-                process: @escaping (_ index: Index) -> StopKeep) {
+public func dfs<Index>(_ start: Index,
+                       prepChild: @escaping (_ from: Index) -> [Index],
+                       process: @escaping (_ index: Index) -> StopKeep) {
     let nexts = prepChild(start)
     for next in nexts {
         if process(next) == .stop { break }

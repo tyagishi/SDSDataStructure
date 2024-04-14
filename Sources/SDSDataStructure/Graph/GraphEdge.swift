@@ -7,10 +7,12 @@
 
 import Foundation
 
+// swiftlint:disable identifier_name
 class GraphEdge<Element>: Identifiable, Equatable where Element: Equatable {
     let id = UUID()
     var fromNode: GraphNode<Element>
     var toNode: GraphNode<Element>
+    
     init(_ from: GraphNode<Element>,_ to: GraphNode<Element>) {
         self.fromNode = from
         self.toNode = to
@@ -21,7 +23,7 @@ class GraphEdge<Element>: Identifiable, Equatable where Element: Equatable {
     }
 }
 
-extension GraphEdge: Hashable where Element: Hashable{
+extension GraphEdge: Hashable where Element: Hashable {
     func hash(into hasher: inout Hasher) {
         hasher.combine(fromNode.nodeValue)
         hasher.combine(toNode.nodeValue)
@@ -33,3 +35,4 @@ extension GraphEdge: CustomStringConvertible where Element: CustomStringConverti
         "\(fromNode.nodeValue) - \(toNode.nodeValue)"
     }
 }
+// swiftlint:enable identifier_name

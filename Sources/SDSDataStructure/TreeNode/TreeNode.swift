@@ -17,6 +17,7 @@ extension Collection {
 
 public protocol ObjectDidChangeProvider {
     associatedtype ChangeDetailType
+    
     var objectDidChange: PassthroughSubject<ChangeDetailType, Never> { get }
 }
 
@@ -33,10 +34,12 @@ extension OSLog {
 ///
 public class TreeNode<T>: NSObject, Identifiable, ObservableObject {
     public enum TreeNodeChange {
-        case addChild(childNodeID: TreeNode.ID, parentID:  TreeNode.ID)
-        case removeChild(childNodeID:  TreeNode.ID, parentID:  TreeNode.ID?)
-        case contentUpdated(nodeID:  TreeNode.ID)
+        case addChild(childNodeID: TreeNode.ID, parentID: TreeNode.ID)
+        case removeChild(childNodeID: TreeNode.ID, parentID: TreeNode.ID?)
+        case contentUpdated(nodeID: TreeNode.ID)
     }
+
+    // swiftlint:disable:next nsobject_prefer_isequal
     public static func == (lhs: TreeNode<T>, rhs: TreeNode<T>) -> Bool {
         lhs.id == rhs.id
     }
@@ -56,7 +59,7 @@ public class TreeNode<T>: NSObject, Identifiable, ObservableObject {
         self.value = value
         self.children = children
         super.init()
-        _ = children.map({$0.parent = self})
+        _ = children.map({ $0.parent = self })
     }
     
     public init(id: UUID = UUID(), observedValue: T, children: [TreeNode] = []) where T: ObjectDidChangeProvider {
@@ -64,11 +67,10 @@ public class TreeNode<T>: NSObject, Identifiable, ObservableObject {
         self.value = observedValue
         self.children = children
         super.init()
-        _ = children.map({$0.parent = self})
-        self.oDCCancellable = observedValue.objectDidChange
-            .sink{ change in
-                self.objectDidChange.send(TreeNodeChange.contentUpdated(nodeID: self.id))
-            }
+        _ = children.map({ $0.parent = self })
+        self.oDCCancellable = observedValue.objectDidChange.sink { _ in
+            self.objectDidChange.send(TreeNodeChange.contentUpdated(nodeID: self.id))
+        }
     }
 
     public func node(id: TreeNode<T>.ID) -> TreeNode<T>? {
@@ -146,7 +148,6 @@ extension TreeNode {
             return bro.lastNodeInDFS()
         }
         return parentNode
-        
     }
     public func lastNodeInDFS() -> TreeNode<T>? {
         if let lastChild = self.children.last?.lastNodeInDFS() { return lastChild }
@@ -157,7 +158,7 @@ extension TreeNode {
 extension TreeNode {
     public func localIndexUnderMyParent() -> Int? {
         guard let parent = self.parent else { return nil } // no parent, no index
-        return parent.children.firstIndex(where: {$0.id == self.id})
+        return parent.children.firstIndex(where: { $0.id == self.id })
     }
     
     public func indexPath() -> IndexPath {
@@ -168,7 +169,7 @@ extension TreeNode {
         }
         let parentIndex = parent.indexPath()
         
-        guard let myIndex = parent.children.firstIndex(where: {$0.id == self.id}) else { fatalError("unowned child") }
+        guard let myIndex = parent.children.firstIndex(where: { $0.id == self.id }) else { fatalError("unowned child") }
         
         return parentIndex.appending(myIndex)
     }
@@ -176,7 +177,7 @@ extension TreeNode {
 
 extension TreeNode {
     public func node(at indexPath: IndexPath) -> TreeNode? {
-        if indexPath.count == 0 { return self }
+        if indexPath.isEmpty { return self }
         if indexPath.count == 1 {
             return children[safe: indexPath.first!]
         }
@@ -214,8 +215,8 @@ extension TreeNode {
     /// - Parameter process: closure for each element
     public func dfp(_ process: @escaping (TreeNode) -> StopKeep) -> StopKeep {
         if process(self) == .stop { return .stop}
-        for child in children {
-            if child.dfp(process) == .stop { return .stop}
+        for child in children where child.dfp(process) == .stop {
+            return .stop
         }
         return .keepGoing
     }

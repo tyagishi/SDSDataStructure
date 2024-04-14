@@ -12,7 +12,7 @@ extension OSLog {
     static var graphLogger = Logger(subsystem: "com.smalldesksoftware.datastructure", category: "graph")
 }
 
-
+// swiftlint:disable identifier_name
 class Graph<Element> where Element: Hashable {
     var nodes: [Element: GraphNode<Element>] = [:]
     var edges: [Index2D<Element>: GraphEdge<Element>] = [:]
@@ -42,14 +42,15 @@ class Graph<Element> where Element: Hashable {
     }
 }
 
-extension Graph: CustomStringConvertible where Element: CustomStringConvertible{
+extension Graph: CustomStringConvertible where Element: CustomStringConvertible {
     var description: String {
         var ret = ""
         for node in nodes.values {
-            let fromDesc = node.edgeToPrev.map({$0.toNode.nodeValue.description}).joined(separator: ",")
-            let toDesc = node.edgeToNext.map({$0.toNode.nodeValue.description}).joined(separator: ",")
+            let fromDesc = node.edgeToPrev.map({ $0.toNode.nodeValue.description }).joined(separator: ",")
+            let toDesc = node.edgeToNext.map({ $0.toNode.nodeValue.description }).joined(separator: ",")
             ret += "[\(node.nodeValue) [from:\(fromDesc)] [to:\(toDesc)] ]"
         }
         return ret
     }
 }
+// swiftlint:enable identifier_name

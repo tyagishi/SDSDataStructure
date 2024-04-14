@@ -9,17 +9,20 @@ import Foundation
 
 // TODO: need to replace with swift-collections
 public struct Dequeue<Element> {
-    var _array: [Element]  = []
+    // swiftlint:disable:next identifier_name
+    var _array: [Element] = []
 
     public mutating func addLast(_ element: Element) {
         _array.append(element)
     }
+    
     public mutating func addFirst(_ element: Element) {
         _array.insert(element, at: 0)
     }
+    
     public mutating func popLast() -> Element? {
         guard let last = _array.last else { return nil }
-        _ = _array.remove(at: _array.count-1)
+        _ = _array.remove(at: _array.count - 1)
         return last
     }
 
@@ -28,9 +31,11 @@ public struct Dequeue<Element> {
         _ = _array.remove(at: 0)
         return first
     }
+    
     public var isEmpty: Bool {
         return _array.isEmpty
     }
+    
     public var count: Int {
         return _array.count
     }

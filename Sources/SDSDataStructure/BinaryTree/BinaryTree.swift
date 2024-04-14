@@ -204,21 +204,21 @@ public class BinaryTreeNode<T>: Identifiable, Hashable ,ObservableObject {
 //
 extension BinaryTreeNode: CustomStringConvertible {
     public var description: String {
-        var s = "\(value)"
+        var desc = "\(value)"
         if left != nil || right != nil {
-            s += " {"
+            desc += " {"
             if let left = left {
-                s += left.description
+                desc += left.description
             }
             if left != nil && right != nil {
-                s += ", "
+                desc += ", "
             }
             if let right = right {
-                s += right.description
+                desc += right.description
             }
-            s += "}"
+            desc += "}"
         }
-        return s
+        return desc
     }
 }
 //
@@ -250,9 +250,8 @@ extension BinaryTreeNode: CustomStringConvertible {
 //
 extension BinaryTreeNode where T == String {
     static func exampleWithString() -> BinaryTreeNode<String> {
-        let rootNode = BinaryTreeNode(value: "Root", left: BinaryTreeNode(value: "Left"),
-                                      right: BinaryTreeNode(value: "Right", left: BinaryTreeNode(value: "RightLeft"),
-                                                            right: BinaryTreeNode(value: "RightRight")))
-        return rootNode
+        return BinaryTreeNode(value: "Root", left: BinaryTreeNode(value: "Left"),
+                              right: BinaryTreeNode(value: "Right", left: BinaryTreeNode(value: "RightLeft"),
+                                                    right: BinaryTreeNode(value: "RightRight")))
     }
 }

@@ -7,7 +7,7 @@
 
 import Foundation
 
-
+// swiftlint:disable identifier_name
 extension TreeNode {
     public func addChild(_ node: TreeNode<T>, index: Int = -1) {
         self.objectWillChange.send()
@@ -24,7 +24,7 @@ extension TreeNode {
         self.objectDidChange.send(.addChild(childNodeID: node.id, parentID: self.id))
     }
 
-    public func addChildren(_ children:[TreeNode]) {
+    public func addChildren(_ children: [TreeNode]) {
         for child in children {
             addChild(child)
         }
@@ -32,7 +32,7 @@ extension TreeNode {
     
     @discardableResult
     public func removeChild(_ node: TreeNode<T>) -> TreeNode<T>? {
-        guard let index = children.firstIndex(where: {$0.id == node.id}) else { return nil }
+        guard let index = children.firstIndex(where: { $0.id == node.id }) else { return nil }
         node.parent = nil
         self.objectWillChange.send()
         defer {
@@ -67,3 +67,4 @@ extension TreeNode {
 //        node.parent = nil
 //    }
 }
+// swiftlint:enable identifier_name

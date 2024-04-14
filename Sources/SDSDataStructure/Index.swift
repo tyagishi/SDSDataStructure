@@ -7,9 +7,11 @@
 
 import Foundation
 
+// swiftlint:disable identifier_name
 struct Index2D<Element>: Hashable where Element: Hashable {
     let x: Element
     let y: Element
+    
     init(_ x: Element,_ y: Element) {
         self.x = x
         self.y = y
@@ -52,3 +54,4 @@ extension Index2D where Element == Int {
 
 typealias Diff2D = Index2D
 typealias Pos2D = Index2D
+// swiftlint:enable identifier_name

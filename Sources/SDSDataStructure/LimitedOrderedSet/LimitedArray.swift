@@ -32,7 +32,7 @@ public class LimitedOrderedSet<T: Equatable>: ObservableObject {
     }
     
     public func contains(_ one: T) -> Bool {
-        return array.contains(where: {$0 == one})
+        return array.contains(where: { $0 == one })
     }
 
     @discardableResult
@@ -46,7 +46,7 @@ public class LimitedOrderedSet<T: Equatable>: ObservableObject {
         return true
     }
     
-    public func toggle(_ one: T){
+    public func toggle(_ one: T) {
         if !contains(one) {
             self.insert(one)
         } else {
@@ -56,7 +56,7 @@ public class LimitedOrderedSet<T: Equatable>: ObservableObject {
 
     @discardableResult
     public func remove(_ existingOne: T) -> Bool {
-        guard let index = array.firstIndex(where: {$0 == existingOne}) else { return false }
+        guard let index = array.firstIndex(where: { $0 == existingOne }) else { return false }
         objectWillChange.send()
         array.remove(at: index)
         return true
@@ -67,6 +67,4 @@ extension LimitedOrderedSet: Equatable where T: Equatable {
     public static func == (lhs: LimitedOrderedSet<T>, rhs: LimitedOrderedSet<T>) -> Bool {
         return lhs.array == rhs.array
     }
-    
-    
 }

@@ -24,4 +24,14 @@ extension RandomAccessCollection {
         }
         return low
     }
+    
+    public func insertionIndexOf<T>(keyPath: KeyPath<Iterator.Element,T>, value: T, predicate: (T, T) -> Bool) -> Index {
+        var low = startIndex, high = endIndex
+        while low != high {
+            let mid = index(low, offsetBy: distance(from: low, to: high) / 2)
+            if predicate(self[mid][keyPath: keyPath], value) { low = index(mid, offsetBy: 1)
+            } else { high = mid }
+        }
+        return low
+    }
 }

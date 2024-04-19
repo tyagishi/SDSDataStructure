@@ -14,8 +14,8 @@ import Foundation
 // [0,10,20,30,40,50].insertionIndexOf(value: 55, predicate: <) == 6    i.e. after  50
 // [0,10,20,30,40,50].insertionIndexOf(value: -5, predicate: <) == 0    i.e. before  0
 extension RandomAccessCollection {
-    typealias OrderPredicate = (Iterator.Element, Iterator.Element) -> Bool
-    func insertionIndexOf(value: Iterator.Element, predicate: OrderPredicate) -> Index {
+    public typealias OrderPredicate = (Iterator.Element, Iterator.Element) -> Bool
+    public func insertionIndexOf(value: Iterator.Element, predicate: OrderPredicate) -> Index {
         var low = startIndex, high = endIndex
         while low != high {
             let mid = index(low, offsetBy: distance(from: low, to: high) / 2)

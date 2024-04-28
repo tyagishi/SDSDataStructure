@@ -35,3 +35,15 @@ extension RandomAccessCollection {
         return low
     }
 }
+
+extension RandomAccessCollection where Element: Comparable {
+    public func insertionIndexOf(value: Iterator.Element) -> Index {
+        var low = startIndex, high = endIndex
+        while low != high {
+            let mid = index(low, offsetBy: distance(from: low, to: high) / 2)
+            if self[mid] < value { low = index(mid, offsetBy: 1)
+            } else { high = mid }
+        }
+        return low
+    }
+}

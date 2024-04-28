@@ -8,16 +8,13 @@
 import XCTest
 @testable import SDSDataStructure
 
-struct DC { // Data Container
+fileprivate struct DC: Comparable { // Data Container
     var value: Int
     init(_ value: Int) { self.value = value }
-}
-extension DC: Comparable {
     static func < (lhs: DC, rhs: DC) -> Bool {
         lhs.value < rhs.value
     }
 }
-
 
 final class InsertionIndexOf_Tests: XCTestCase {
     // [0,10,20,30,40,50].insertionIndexOf(value: 30, predicate: <) == 3    i.e. before 30
@@ -36,7 +33,15 @@ final class InsertionIndexOf_Tests: XCTestCase {
         XCTAssertEqual(sut.insertionIndexOf(value: -5, predicate: < ), 0)
     }
 
-
+    func test_IntComparable() throws {
+        let sut = [0, 10, 20, 30, 40, 50]
+        
+        XCTAssertEqual(sut.insertionIndexOf(element: 30), 3)
+        //XCTAssertEqual(sut.insertionIndexOf(element: 30), 4)
+        XCTAssertEqual(sut.insertionIndexOf(element: 35), 4)
+        XCTAssertEqual(sut.insertionIndexOf(element: 55), 6)
+        XCTAssertEqual(sut.insertionIndexOf(element: -5), 0)
+    }
     
     func test_keyWithPredicate() throws {
         let sut = [DC(0), DC(10), DC(20), DC(30), DC(40), DC(50)]

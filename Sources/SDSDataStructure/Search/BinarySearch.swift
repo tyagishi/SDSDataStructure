@@ -47,3 +47,17 @@ extension RandomAccessCollection where Element: Comparable {
         return low
     }
 }
+
+extension Array where Element: Comparable {
+    public mutating func insertAtSorted(_ element: Element) {
+        let index = self.insertionIndexOf(element: element)
+        self.insert(element, at: index)
+    }
+
+    public func insertedAtSorted(_ element: Element) -> [Element] {
+        let index = self.insertionIndexOf(element: element)
+        var ret = self
+        ret.insert(element, at: index)
+        return ret
+    }
+}

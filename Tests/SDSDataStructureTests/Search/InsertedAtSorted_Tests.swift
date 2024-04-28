@@ -1,5 +1,5 @@
 //
-//  insertAtSorted_Tests.swift
+//  InsertedAtSorted_Tests.swift
 //
 //  Created by : Tomoaki Yagishita on 2024/04/28
 //  © 2024  SmallDeskSoftware
@@ -16,9 +16,7 @@ fileprivate struct DC: Comparable { // Data Container
     }
 }
 
-final class insertAtSorted_Tests: XCTestCase {
-
-    
+final class InsertedAtSorted_Tests: XCTestCase {
     func test_IntComparable() throws {
         let sut = [0, 10, 20, 30, 40, 50]
 

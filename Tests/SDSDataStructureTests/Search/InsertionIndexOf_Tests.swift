@@ -50,11 +50,11 @@ final class InsertionIndexOf_Tests: XCTestCase {
 
     func test_comparator() throws {
         let sut = [DC(0), DC(10), DC(20), DC(30), DC(40), DC(50)]
-        XCTAssertEqual(sut.insertionIndexOf(value: DC(30)), 3)
-        //XCTAssertEqual(sut.insertionIndexOf(value: DC(30)), 4)  // no way to specify <=
-        XCTAssertEqual(sut.insertionIndexOf(value: DC(35)), 4)
-        XCTAssertEqual(sut.insertionIndexOf(value: DC(55)), 6)
-        XCTAssertEqual(sut.insertionIndexOf(value: DC(-5)), 0)
+        XCTAssertEqual(sut.insertionIndexOf(element: DC(30)), 3)
+        //XCTAssertEqual(sut.insertionIndexOf(element: DC(30)), 4)  // no way to specify <=
+        XCTAssertEqual(sut.insertionIndexOf(element: DC(35)), 4)
+        XCTAssertEqual(sut.insertionIndexOf(element: DC(55)), 6)
+        XCTAssertEqual(sut.insertionIndexOf(element: DC(-5)), 0)
     }
 
 }

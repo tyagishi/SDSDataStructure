@@ -26,6 +26,15 @@ final class InsertedAtSorted_Tests: XCTestCase {
         XCTAssertEqual(sut.insertedAtSorted(-5), [-5, 0, 10, 20, 30, 40, 50])
     }
 
+    func test_IntPredicate() throws {
+        let sut = Array([0, 10, 20, 30, 40, 50].reversed())
+
+        XCTAssertEqual(sut.insertedAtSorted(30, predicate: >), [0, 10, 20, 30, 30, 40, 50].reversed())
+        XCTAssertEqual(sut.insertedAtSorted(35, predicate: >), [0, 10, 20, 30, 35, 40, 50].reversed())
+        XCTAssertEqual(sut.insertedAtSorted(55, predicate: >), [0, 10, 20, 30, 40, 50, 55].reversed())
+        XCTAssertEqual(sut.insertedAtSorted(-5, predicate: >), [-5, 0, 10, 20, 30, 40, 50].reversed())
+    }
+    
     func test_DCComparable() throws {
         let sut = [DC(0), DC(10), DC(20), DC(30), DC(40), DC(50)]
 

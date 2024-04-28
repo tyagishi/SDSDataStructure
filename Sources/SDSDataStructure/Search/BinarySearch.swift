@@ -53,10 +53,24 @@ extension Array where Element: Comparable {
         let index = self.insertionIndexOf(element: element)
         self.insert(element, at: index)
     }
-
+    
     public func insertedAtSorted(_ element: Element) -> [Element] {
-        let index = self.insertionIndexOf(element: element)
         var ret = self
+        let index = ret.insertionIndexOf(element: element)
+        ret.insert(element, at: index)
+        return ret
+    }
+}
+
+extension Array {
+    public mutating func insertAtSorted(_ element: Element, predicate: OrderPredicate) {
+        let index = self.insertionIndexOf(value: element, predicate: predicate)
+        self.insert(element, at: index)
+    }
+
+    public func insertedAtSorted(_ element: Element, predicate: OrderPredicate) -> [Element] {
+        var ret = self
+        let index = ret.insertionIndexOf(value: element, predicate: predicate)
         ret.insert(element, at: index)
         return ret
     }

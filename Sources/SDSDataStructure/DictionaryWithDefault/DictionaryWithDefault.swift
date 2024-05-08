@@ -15,7 +15,7 @@ public typealias DWD = DictionaryWithDefault
 /// Storing default value in dicitionary would be helpful like following.
 /// ```swift
 /// var dic = DictionaryWithDefault<Int:String>(defaultValue: "Zero")
-/// let value = dic[0, default: "Zero"]
+/// let value = dic[0] // dic does not have value for 0...
 /// print(value) // Zero
 /// ```
 ///

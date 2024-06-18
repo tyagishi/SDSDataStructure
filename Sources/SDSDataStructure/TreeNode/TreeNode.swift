@@ -22,7 +22,7 @@ public protocol ObjectDidChangeProvider {
 }
 
 extension OSLog {
-    static var treeNodeLogger = Logger(subsystem: "com.smalldesksoftware.SDSDataStructure", category: "treeNode")
+    static let treeNodeLogger = Logger(subsystem: "com.smalldesksoftware.SDSDataStructure", category: "treeNode")
 }
 
 /// tree node

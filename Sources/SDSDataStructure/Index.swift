@@ -17,19 +17,16 @@ struct Index2D<Element>: Hashable where Element: Hashable {
         self.y = y
     }
 }
+extension Index2D: Sendable where Element: Sendable {}
 
 extension Index2D where Element == Int {
-    static var zero: Index2D = Index2D(0, 0)
+    static let zero: Index2D = Index2D(0, 0)
 
-    static var diff8: [Diff2D<Element>] {
-        return [Diff2D(-1, -1), Diff2D(0,-1), Diff2D(1,-1),
-                Diff2D(-1, 0), Diff2D(1, 0),
-                Diff2D(-1, 1), Diff2D(0, 1), Diff2D(1, 1)]
-    }
+    static let diff8: [Diff2D<Element>] = [Diff2D(-1, -1), Diff2D(0,-1), Diff2D(1,-1),
+                                           Diff2D(-1, 0), Diff2D(1, 0),
+                                           Diff2D(-1, 1), Diff2D(0, 1), Diff2D(1, 1)]
 
-    var dir8: [Index2D] {
-        return [self.n, self.e, self.s, self.w, self.nw, self.ne, self.se, self.sw]
-    }
+    var dir8: [Index2D] { return [self.n, self.e, self.s, self.w, self.nw, self.ne, self.se, self.sw] }
 
     var n: Index2D { return Index2D(self.x    , self.y - 1) }
     var e: Index2D { return Index2D(self.x + 1, self.y    ) }
@@ -41,15 +38,15 @@ extension Index2D where Element == Int {
     var se: Index2D { return Index2D(self.x + 1, self.y + 1) }
     var sw: Index2D { return Index2D(self.x - 1, self.y + 1) }
 
-    func n(_ offset: Int) -> Index2D { return Index2D(self.x         , self.y - offset) }
-    func e(_ offset: Int) -> Index2D { return Index2D(self.x + offset, self.y         ) }
-    func s(_ offset: Int) -> Index2D { return Index2D(self.x         , self.y + offset) }
-    func w(_ offset: Int) -> Index2D { return Index2D(self.x - offset, self.y         ) }
+    func n(_ offset: Int = 1) -> Index2D { return Index2D(self.x         , self.y - offset) }
+    func e(_ offset: Int = 1) -> Index2D { return Index2D(self.x + offset, self.y         ) }
+    func s(_ offset: Int = 1) -> Index2D { return Index2D(self.x         , self.y + offset) }
+    func w(_ offset: Int = 1) -> Index2D { return Index2D(self.x - offset, self.y         ) }
 
-    func nw(_ offset: Int) -> Index2D { return Index2D(self.x - offset, self.y - offset) }
-    func ne(_ offset: Int) -> Index2D { return Index2D(self.x + offset, self.y - offset) }
-    func se(_ offset: Int) -> Index2D { return Index2D(self.x + offset, self.y + offset) }
-    func sw(_ offset: Int) -> Index2D { return Index2D(self.x - offset, self.y + offset) }
+    func nw(_ offset: Int = 1) -> Index2D { return Index2D(self.x - offset, self.y - offset) }
+    func ne(_ offset: Int = 1) -> Index2D { return Index2D(self.x + offset, self.y - offset) }
+    func se(_ offset: Int = 1) -> Index2D { return Index2D(self.x + offset, self.y + offset) }
+    func sw(_ offset: Int = 1) -> Index2D { return Index2D(self.x - offset, self.y + offset) }
 }
 
 typealias Diff2D = Index2D

@@ -9,7 +9,7 @@ import Foundation
 import OSLog
 
 extension OSLog {
-    static var graphLogger = Logger(subsystem: "com.smalldesksoftware.datastructure", category: "graph")
+    static let graphLogger = Logger(subsystem: "com.smalldesksoftware.datastructure", category: "graph")
 }
 
 // swiftlint:disable identifier_name

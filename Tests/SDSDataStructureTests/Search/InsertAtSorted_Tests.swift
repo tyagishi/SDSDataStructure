@@ -16,6 +16,7 @@ fileprivate struct DC: Comparable { // Data Container
     }
 }
 
+@MainActor
 final class InsertAtSorted_Tests: XCTestCase {
     func test_IntComparable() throws {
         XCTContext.runActivity(named: "30", block: { _ in

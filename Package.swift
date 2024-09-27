@@ -34,5 +34,6 @@ let package = Package(
         .testTarget(
             name: "SDSDataStructureTests",
             dependencies: ["SDSDataStructure"]),
-    ]
+    ],
+    swiftLanguageVersions: [.version("6")]
 )

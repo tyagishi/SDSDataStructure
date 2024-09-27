@@ -1,0 +1,24 @@
+{
+  "configurations" : [
+    {
+      "id" : "21F29779-64B9-44CC-BF80-BE63965019A4",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "SDSDataStructureTests",
+        "name" : "SDSDataStructureTests"
+      }
+    }
+  ],
+  "version" : 1
+}

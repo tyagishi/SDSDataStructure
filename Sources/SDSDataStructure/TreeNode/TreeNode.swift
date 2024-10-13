@@ -46,6 +46,7 @@ public class TreeNode<T>: NSObject, Identifiable, ObservableObject {
     
     public var id: UUID
     public var value: T
+    public var dic: [String: Any] = [:]
     
     public weak var parent: TreeNode?
     public var children: [TreeNode<T>]

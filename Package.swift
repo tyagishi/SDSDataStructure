@@ -19,6 +19,8 @@ let package = Package(
         // Dependencies declare other packages that this package depends on.
         // .package(url: /* package url */, from: "1.0.0"),
         //.package(url: "https://github.com/apple/swift-docc-plugin", from: "1.0.0"),
+        .package(url: "https://github.com/tyagishi/SDSStringExtension", from: "1.3.1"),
+        .package(url: "https://github.com/tyagishi/SDSMacros", from: "1.0.5"),
         .package(url: "https://github.com/SimplyDanny/SwiftLintPlugins", exact: "0.56.1"),
     ],
     targets: [
@@ -26,8 +28,9 @@ let package = Package(
         // Targets can depend on other targets in this package, and on products in packages this package depends on.
         .target(
             name: "SDSDataStructure",
-            dependencies: [],
+            dependencies: ["SDSStringExtension"],
             plugins: [
+                .plugin(name: "SDSMacros", package: "SDSMacros"),
                 .plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")
             ]
         ),

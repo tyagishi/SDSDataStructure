@@ -40,6 +40,7 @@ disabled_rules:
   - multiline_literal_brackets
   - multiline_parameters
   - multiline_parameters_brackets
+  - non_optional_string_data_conversion
   - no_extension_access_modifier
   - no_fallthrough_only
   - no_grouping_extension

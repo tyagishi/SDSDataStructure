@@ -74,6 +74,14 @@ open class FileSystemItem: Identifiable, ObservableObject { // Equatable?
         self.init(filename: filename, data: fileData)
         return
     }
+    
+    var regularContent: Data? {
+        switch self.content {
+        case .directory:            return nil
+        case .txtFile(_, let data): return data
+        case .binFile(let data):    return data
+        }
+    }
 }
 
 extension FileSystemItem {

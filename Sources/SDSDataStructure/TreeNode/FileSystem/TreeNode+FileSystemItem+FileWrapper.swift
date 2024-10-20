@@ -51,7 +51,18 @@ extension TreeNode where T == FileSystemItem {
         fileWrapper.addFileWrapper(dirNode.fileWrapper)
         return dirNode
     }
-    
+
+    @discardableResult
+    public func addRegularFile(fileName: String, fileSystemItem: FileSystemItem, index: Int = -1) -> TreeNode<FileSystemItem> {
+        guard let data = fileSystemItem.regularContent else { fatalError("use addDirectory for adding directory")}
+        let newNode = TreeNode(value: fileSystemItem)
+        newNode.fileWrapper = FileWrapper(regularFileWithContents: data)
+        newNode.fileWrapper.preferredFilename = fileName
+        addChild(newNode, index: index)
+        fileWrapper.addFileWrapper(newNode.fileWrapper)
+        return newNode
+    }
+
     @discardableResult
     public func addTextFile(fileName: String, text: String, index: Int = -1) -> TreeNode<FileSystemItem> {
         let textItem = FileSystemItem(filename: fileName, text: text)

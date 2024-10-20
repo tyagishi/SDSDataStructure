@@ -56,11 +56,14 @@ public class TreeNode<T>: NSObject, Identifiable, ObservableObject {
     public var cancellables: Set<AnyCancellable> = Set()
     public var oDCCancellable: AnyCancellable? = nil
 
-    public init(id: UUID = UUID(), value: T, children: [TreeNode] = []) {
+    public init(id: UUID = UUID(), value: T, parent: TreeNode? = nil, children: [TreeNode] = []) {
         self.id = id
         self.value = value
         self.children = children
         super.init()
+        if let parent = parent {
+            parent.children.append(self)
+        }
         _ = children.map({ $0.parent = self })
     }
     

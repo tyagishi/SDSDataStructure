@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import SDSDataStructure
 
 extension TreeNode where T == FileSystemItem {
     public var isDirectory: Bool { self.value.content.isDirectory }

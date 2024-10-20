@@ -31,6 +31,7 @@ open class FileSystemItem: Identifiable, ObservableObject { // Equatable?
     }
     
     public private(set) var content: FileContent
+    public var dic: [String: Any] = [:]
 
     public init(directory dirname: String) {
         self.content = .directory

@@ -18,7 +18,7 @@ public enum FileSystemItemChange {
 }
 
 @DidChangeObject<FileSystemItemChange>
-public class FileSystemItem: Identifiable, ObservableObject { // Equatable?
+open class FileSystemItem: Identifiable, ObservableObject { // Equatable?
     public let id = UUID()
     public var filename: String {
         didSet { self.objectDidChange.send(.filenameChanged(oldValue)) }

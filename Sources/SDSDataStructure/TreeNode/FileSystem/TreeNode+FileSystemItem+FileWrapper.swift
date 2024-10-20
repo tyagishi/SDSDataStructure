@@ -8,6 +8,7 @@
 import Foundation
 
 extension TreeNode where T == FileSystemItem {
+    public var filename: String { self.value.filename }
     public var isDirectory: Bool { self.value.content.isDirectory }
     public var isTextFile: Bool { self.value.content.isTxtFile }
 
@@ -74,10 +75,35 @@ extension TreeNode where T == FileSystemItem {
         return textNode
     }
     
+    public func renameWithFileWrapper(to newName: String) {
+        guard let oldName = self.fileWrapper.preferredFilename,
+              oldName != newName else { return } // no need to change
+        let newFileWrapper = FileWrapper(directoryWithFileWrappers: fileWrapper.fileWrappers ?? [:])
+        newFileWrapper.preferredFilename = newName
+
+        if let parent = self.parent {
+            parent.fileWrapper.removeFileWrapper(self.fileWrapper)
+            parent.fileWrapper.addFileWrapper(newFileWrapper)
+        }
+        if let fileWrappers = fileWrapper.fileWrappers?.values {
+            fileWrappers.forEach({
+                fileWrapper.removeFileWrapper($0)
+            })
+        }
+        self.value.filename = newName
+        self.fileWrapper = newFileWrapper
+        
+        return
+    }
+    
     public func updateFileWrapper() {
         switch self.value.content {
         case .directory:
-            self.fileWrapper.preferredFilename = self.value.filename
+            if self.fileWrapper.preferredFilename != self.value.filename {
+                // replace
+                self.fileWrapper = FileWrapper(directoryWithFileWrappers: [:])
+                
+            }
             for child in children {
                 child.updateFileWrapper()
             }

@@ -101,12 +101,12 @@ extension TreeNode where T == FileSystemItem {
         addChild(node, index: index)
         self.fileWrapper.addFileWrapper(node.fileWrapper)
     }
-//
-//    func removeChildwithFileWrapper(_ node: TreeNode<T>) {
-//        removeChild(node)
-//        self.value.fileWrapper.removeFileWrapper(node.value.fileWrapper)
-//    }
-    
+
+    func removeChildwithFileWrapper(_ node: TreeNode<T>) {
+        removeChild(node)
+        self.fileWrapper.removeFileWrapper(node.fileWrapper)
+    }
+
     public func replaceFileWrapper(_ newFileWapper: FileWrapper) {
         if let parent = self.parent?.fileWrapper {
             parent.removeFileWrapper(self.fileWrapper)

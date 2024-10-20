@@ -15,6 +15,7 @@ extension Collection {
     }
 }
 
+@available(*, deprecated, message: "use SDSMacro.DidChangeObject")
 public protocol ObjectDidChangeProvider {
     associatedtype ChangeDetailType
     

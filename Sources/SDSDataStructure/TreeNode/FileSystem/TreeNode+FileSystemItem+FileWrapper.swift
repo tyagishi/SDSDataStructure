@@ -99,11 +99,6 @@ extension TreeNode where T == FileSystemItem {
     public func updateFileWrapper() {
         switch self.value.content {
         case .directory:
-            if self.fileWrapper.preferredFilename != self.value.filename {
-                // replace
-                self.fileWrapper = FileWrapper(directoryWithFileWrappers: [:])
-                
-            }
             for child in children {
                 child.updateFileWrapper()
             }

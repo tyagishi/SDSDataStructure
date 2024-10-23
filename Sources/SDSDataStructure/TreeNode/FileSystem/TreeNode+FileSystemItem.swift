@@ -8,7 +8,7 @@
 import Foundation
 
 extension TreeNode where T == FileSystemItem {
-    public func nodeFrom(path: any StringProtocol) -> TreeNode<FileSystemItem>? {
+    public func node(at path: any StringProtocol) -> TreeNode<FileSystemItem>? {
         var pathComponents = path.split(separator: "/")
         var node: TreeNode<FileSystemItem> = self.rootNode()
         while let component = pathComponents.first {

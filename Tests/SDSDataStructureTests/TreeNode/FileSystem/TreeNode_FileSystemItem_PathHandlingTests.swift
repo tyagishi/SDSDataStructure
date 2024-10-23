@@ -38,10 +38,10 @@ final class TreeNode_FileSystemItem_PathHandlingTests: XCTestCase {
     func test_nodeFromPath() async throws {
         let sut = prepRootNode()
 
-        let intermid1 = try XCTUnwrap(sut.nodeFrom(path: "/intermid1"))
+        let intermid1 = try XCTUnwrap(sut.node(at: "/intermid1"))
         XCTAssertEqual(intermid1.filename, "intermid1")
 
-        let leaf21 = try XCTUnwrap(sut.nodeFrom(path: "/intermid2/Leaf21.txt"))
+        let leaf21 = try XCTUnwrap(sut.node(at: "/intermid2/Leaf21.txt"))
         XCTAssertEqual(leaf21.filename, "Leaf21.txt")
     }
     

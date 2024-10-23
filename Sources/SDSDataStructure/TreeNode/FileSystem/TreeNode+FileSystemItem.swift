@@ -30,7 +30,7 @@ extension TreeNode where T == FileSystemItem {
         return "/" + pathString
     }
     
-    public func fullPathToFile() -> String {
+    public func fullPathToNode() -> String {
         return self.pathFromRoot() + self.filename
     }
 }

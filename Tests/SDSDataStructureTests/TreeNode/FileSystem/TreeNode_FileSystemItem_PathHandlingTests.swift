@@ -23,15 +23,15 @@ final class TreeNode_FileSystemItem_PathHandlingTests: XCTestCase {
         let sut = prepRootNode()
 
         XCTAssertEqual(sut.pathFromRoot(), "/")
-        XCTAssertEqual(sut.fullPathToFile(), "/root")
+        XCTAssertEqual(sut.fullPathToNode(), "/root")
 
         let intermid1 = try XCTUnwrap(sut.search(match: { $0.filename == "intermid1" }))
         XCTAssertEqual(intermid1.pathFromRoot(), "/")
-        XCTAssertEqual(intermid1.fullPathToFile(), "/intermid1")
+        XCTAssertEqual(intermid1.fullPathToNode(), "/intermid1")
 
         let leaf12 = try XCTUnwrap(sut.search(match: { $0.filename == "Leaf12.txt" }))
         XCTAssertEqual(leaf12.pathFromRoot(), "/intermid1/")
-        XCTAssertEqual(leaf12.fullPathToFile(), "/intermid1/Leaf12.txt")
+        XCTAssertEqual(leaf12.fullPathToNode(), "/intermid1/Leaf12.txt")
 
     }
     

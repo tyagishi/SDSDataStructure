@@ -8,6 +8,7 @@
 import Foundation
 import Combine
 import OSLog
+import SDSMacros
 
 extension Collection {
     subscript(safe index: Index) -> Element? {
@@ -15,17 +16,22 @@ extension Collection {
     }
 }
 
-@available(*, deprecated, message: "use SDSMacro.DidChangeObject")
-public protocol ObjectDidChangeProvider {
-    associatedtype ChangeDetailType
-    
-    var objectDidChange: PassthroughSubject<ChangeDetailType, Never> { get }
-}
+//@available(*, deprecated, message: "use SDSMacro.DidChangeObject")
+//public protocol ObjectDidChangeProvider {
+//    associatedtype ChangeDetailType
+//    
+//    var objectDidChange: PassthroughSubject<ChangeDetailType, Never> { get }
+//}
 
 extension OSLog {
     static let treeNodeLogger = Logger(subsystem: "com.smalldesksoftware.SDSDataStructure", category: "treeNode")
 }
 
+public enum TreeNodeChange {
+    case addChild(childNodeID: TreeNode<Any>.ID, parentID: TreeNode<Any>.ID)
+    case removeChild(childNodeID: TreeNode<Any>.ID, parentID: TreeNode<Any>.ID?)
+    case contentUpdated(nodeID: TreeNode<Any>.ID)
+}
 /// tree node
 ///
 /// to represent tree with using T as node value
@@ -33,12 +39,8 @@ extension OSLog {
 /// node has children as child nodes
 /// node has optional parent and if it is null, it must be root node
 ///
+@DidChangeObject<TreeNodeChange>
 public class TreeNode<T>: NSObject, Identifiable, ObservableObject {
-    public enum TreeNodeChange {
-        case addChild(childNodeID: TreeNode.ID, parentID: TreeNode.ID)
-        case removeChild(childNodeID: TreeNode.ID, parentID: TreeNode.ID?)
-        case contentUpdated(nodeID: TreeNode.ID)
-    }
 
     // swiftlint:disable:next nsobject_prefer_isequal
     public static func == (lhs: TreeNode<T>, rhs: TreeNode<T>) -> Bool {
@@ -52,7 +54,6 @@ public class TreeNode<T>: NSObject, Identifiable, ObservableObject {
     public weak var parent: TreeNode?
     public var children: [TreeNode<T>]
 
-    public let objectDidChange = PassthroughSubject<TreeNodeChange,Never>()
     public var cancellables: Set<AnyCancellable> = Set()
     public var oDCCancellable: AnyCancellable? = nil
 

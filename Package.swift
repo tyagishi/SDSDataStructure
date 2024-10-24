@@ -20,7 +20,7 @@ let package = Package(
         // .package(url: /* package url */, from: "1.0.0"),
         //.package(url: "https://github.com/apple/swift-docc-plugin", from: "1.0.0"),
         .package(url: "https://github.com/tyagishi/SDSStringExtension", from: "1.3.1"),
-        .package(url: "https://github.com/tyagishi/SDSMacros", from: "1.0.5"),
+        .package(url: "https://github.com/tyagishi/SDSMacros", from: "2.0.0"),
         .package(url: "https://github.com/SimplyDanny/SwiftLintPlugins", exact: "0.56.1"),
     ],
     targets: [

@@ -78,20 +78,35 @@ extension TreeNode where T == FileSystemItem {
     public func renameWithFileWrapper(to newName: String) {
         guard let oldName = self.fileWrapper.preferredFilename,
               oldName != newName else { return } // no need to change
-        let newFileWrapper = FileWrapper(directoryWithFileWrappers: fileWrapper.fileWrappers ?? [:])
-        newFileWrapper.preferredFilename = newName
+        if isDirectory { // rename folder
+            let newFileWrapper = FileWrapper(directoryWithFileWrappers: fileWrapper.fileWrappers ?? [:])
+            newFileWrapper.preferredFilename = newName
+            
+            if let parent = self.parent {
+                parent.fileWrapper.removeFileWrapper(self.fileWrapper)
+                parent.fileWrapper.addFileWrapper(newFileWrapper)
+            }
+            if let fileWrappers = fileWrapper.fileWrappers?.values {
+                fileWrappers.forEach({
+                    fileWrapper.removeFileWrapper($0)
+                })
+            }
+            self.value.filename = newName
+            self.fileWrapper = newFileWrapper
+        } else if let regularContent = self.value.regularContent {
+            // replace fileWrapper in parent.fileWrapper.fileWrappers atKey: oldFileName
+            let newFileWrapper = FileWrapper(regularFileWithContents: regularContent)
+            newFileWrapper.preferredFilename = newName
 
-        if let parent = self.parent {
-            parent.fileWrapper.removeFileWrapper(self.fileWrapper)
-            parent.fileWrapper.addFileWrapper(newFileWrapper)
+            // care parent
+            if let parent = self.parent {
+                parent.fileWrapper.removeFileWrapper(self.fileWrapper)
+                parent.fileWrapper.addFileWrapper(newFileWrapper)
+            }
+            self.value.filename = newName
+        } else {
+            fatalError("unknown node")
         }
-        if let fileWrappers = fileWrapper.fileWrappers?.values {
-            fileWrappers.forEach({
-                fileWrapper.removeFileWrapper($0)
-            })
-        }
-        self.value.filename = newName
-        self.fileWrapper = newFileWrapper
         
         return
     }

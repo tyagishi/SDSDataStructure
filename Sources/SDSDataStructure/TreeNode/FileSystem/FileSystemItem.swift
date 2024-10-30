@@ -75,7 +75,7 @@ open class FileSystemItem: Identifiable, ObservableObject { // Equatable?
         return
     }
     
-    var regularContent: Data? {
+    public var regularContent: Data? {
         switch self.content {
         case .directory:            return nil
         case .txtFile(_, let data): return data

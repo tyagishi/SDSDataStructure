@@ -41,6 +41,14 @@ extension TreeNode where T == FileSystemItem {
         }
         set { self.dic["FileWrapper"] = newValue }
     }
+
+    @discardableResult
+    public func addFileSystemChild(_ childNode: TreeNode<FileSystemItem>, index: Int = -1) -> TreeNode<FileSystemItem> {
+        let childFileWrapper = childNode.fileWrapper
+        addChild(childNode, index: index)
+        self.fileWrapper.addFileWrapper(childFileWrapper)
+        return childNode
+    }
     
     @discardableResult
     public func addDirectory(dirName: String, index: Int = -1) -> TreeNode<FileSystemItem> {
@@ -48,19 +56,28 @@ extension TreeNode where T == FileSystemItem {
         let dirNode = TreeNode(value: dirItem)
         dirNode.fileWrapper = FileWrapper(directoryWithFileWrappers: [:])
         dirNode.fileWrapper.preferredFilename = dirName
-        addChild(dirNode, index: index)
-        fileWrapper.addFileWrapper(dirNode.fileWrapper)
+        addFileSystemChild(dirNode, index: index)
         return dirNode
     }
 
+    @available(*, deprecated, message: "use addRegularFile(fileSystemItem:, index:) instead")
     @discardableResult
     public func addRegularFile(fileName: String, fileSystemItem: FileSystemItem, index: Int = -1) -> TreeNode<FileSystemItem> {
         guard let data = fileSystemItem.regularContent else { fatalError("use addDirectory for adding directory")}
         let newNode = TreeNode(value: fileSystemItem)
         newNode.fileWrapper = FileWrapper(regularFileWithContents: data)
         newNode.fileWrapper.preferredFilename = fileName
-        addChild(newNode, index: index)
-        fileWrapper.addFileWrapper(newNode.fileWrapper)
+        addFileSystemChild(newNode, index: index)
+        return newNode
+    }
+
+    @discardableResult
+    public func addRegularFile(fileSystemItem: FileSystemItem, index: Int = -1) -> TreeNode<FileSystemItem> {
+        guard let data = fileSystemItem.regularContent else { fatalError("use addDirectory for adding directory")}
+        let newNode = TreeNode(value: fileSystemItem)
+        newNode.fileWrapper = FileWrapper(regularFileWithContents: data)
+        newNode.fileWrapper.preferredFilename = fileSystemItem.filename
+        addFileSystemChild(newNode, index: index)
         return newNode
     }
 
@@ -70,8 +87,7 @@ extension TreeNode where T == FileSystemItem {
         let textNode = TreeNode(value: textItem)
         textNode.fileWrapper = FileWrapper(regularFileWithContents: text.data(using: .utf8)!)
         textNode.fileWrapper.preferredFilename = fileName
-        addChild(textNode, index: index)
-        fileWrapper.addFileWrapper(textNode.fileWrapper)
+        addFileSystemChild(textNode, index: index)
         return textNode
     }
     

@@ -17,6 +17,11 @@ public enum FileSystemItemChange {
     case textChagned(String)
 }
 
+public protocol FileSystemItemProtocol {
+    var dic: [String: Any] { get set }
+    func snapshot(contentType: UTType) throws -> Self
+}
+
 @DidChangeObject<FileSystemItemChange>
 open class FileSystemItem: Identifiable, ObservableObject { // Equatable?
     public let id = UUID()

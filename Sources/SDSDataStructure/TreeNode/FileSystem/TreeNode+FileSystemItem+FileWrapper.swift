@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UniformTypeIdentifiers
 
 extension TreeNode where T == FileSystemItem {
     public var filename: String { self.value.filename }
@@ -166,5 +167,32 @@ extension TreeNode where T == FileSystemItem {
             parent.addFileWrapper(newFileWapper)
         }
         self.fileWrapper = newFileWapper
+    }
+}
+
+// for save
+extension FileSystemItem {
+    public func snapshot(contentType: UTType) throws -> FileSystemItem {
+        switch content {
+        case .binFile(let data):
+            return FileSystemItem(filename: self.filename, data: data)
+        case .directory:
+            return FileSystemItem(directory: self.filename)
+        case .txtFile(let text, let data):
+            return FileSystemItem(filename: self.filename, text: text)
+        }
+    }
+}
+
+extension TreeNode where T == FileSystemItem {
+    public func snapshot(contentType: UTType) throws -> TreeNode<FileSystemItem> {
+        let mySnapshotNode = try TreeNode<FileSystemItem>(value: self.value.snapshot(contentType: contentType))
+        mySnapshotNode.fileWrapper = self.fileWrapper
+        
+        for child in self.children {
+            let childSnapshot = try child.snapshot(contentType: contentType)
+            mySnapshotNode.addFileSystemChild(childSnapshot)
+        }
+        return mySnapshotNode
     }
 }

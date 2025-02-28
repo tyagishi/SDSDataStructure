@@ -13,7 +13,7 @@ extension TreeNode where T == FileSystemItem {
     public var isDirectory: Bool { self.value.content.isDirectory }
     public var isTextFile: Bool { self.value.content.isTxtFile }
 
-    public convenience init(preferredFilename: String,_ fileWrapper: FileWrapper, extraTextSuffixes: [String] = []) {
+    public convenience init(preferredFilename: String,_ fileWrapper: FileWrapper, textFileSuffixes: [String] = []) {
         if fileWrapper.isDirectory {
             self.init(value: .init(directory: preferredFilename))
             self.fileWrapper = fileWrapper
@@ -25,14 +25,29 @@ extension TreeNode where T == FileSystemItem {
                 addChildwithFileWrapper(childNode)
             }
             return
-        } else if fileWrapper.isRegularFile {
-            if let content = FileSystemItem(filename: preferredFilename, fileWrapper: fileWrapper, extraTextSuffixes: extraTextSuffixes) {
-                self.init(value: content)
-                self.fileWrapper = fileWrapper
-                return
-            }
         }
-        fatalError("unsupported fileWrapper type")
+        let content = FileSystemItem(filename: preferredFilename, fileWrapper: fileWrapper, textFileSuffixes: textFileSuffixes)
+        self.init(value: content)
+        self.fileWrapper = fileWrapper
+        return
+    }
+    
+    public convenience init(preferredFilename: String,_ fileWrapper: FileWrapper, itemContentProvider: ((String, FileWrapper) -> (FileSystemItem, FileWrapper)) ) {
+        if fileWrapper.isDirectory {
+            self.init(value: .init(directory: preferredFilename))
+            self.fileWrapper = fileWrapper
+            
+            guard let childFileWrappers = fileWrapper.fileWrappers else { return }
+            for key in childFileWrappers.keys {
+                guard let childFileWrapper = childFileWrappers[key] else { continue }
+                let childNode = TreeNode.init(preferredFilename: key, childFileWrapper, itemContentProvider: itemContentProvider)
+                addChildwithFileWrapper(childNode)
+            }
+        } else {
+            let (ownFileItem, ownFileWrapper) = itemContentProvider(preferredFilename, fileWrapper)
+            self.init(value: ownFileItem)
+            self.fileWrapper = ownFileWrapper
+        }
     }
     
     public var fileWrapper: FileWrapper {
@@ -91,6 +106,17 @@ extension TreeNode where T == FileSystemItem {
         addFileSystemChild(textNode, index: index)
         return textNode
     }
+
+    @available(iOS 16, macOS 13, *)
+    @discardableResult
+    public func addPathDirectFile(fileName: String, path: URL?, fileWrapper: FileWrapper, index: Int = -1) -> TreeNode<FileSystemItem> {
+        let item = FileSystemItem(pathFilename: fileName)
+        let node = TreeNode(value: item)
+        node.fileWrapper = fileWrapper
+        node.fileWrapper.preferredFilename = fileName
+        addFileSystemChild(node, index: index)
+        return node
+    }
     
     public func renameWithFileWrapper(to newName: String) {
         guard let oldName = self.fileWrapper.preferredFilename,
@@ -148,6 +174,9 @@ extension TreeNode where T == FileSystemItem {
                 fileWrapper.preferredFilename = self.value.filename
                 replaceFileWrapper(fileWrapper)
             }
+        case .pathDirectFile:
+            // nothing needed
+            break
         }
     }
     
@@ -178,8 +207,11 @@ extension FileSystemItem {
             return FileSystemItem(filename: self.filename, data: data)
         case .directory:
             return FileSystemItem(directory: self.filename)
-        case .txtFile(let text, let data):
+        case .txtFile(let text, _):
             return FileSystemItem(filename: self.filename, text: text)
+        case .pathDirectFile:
+            return FileSystemItem(pathFilename: self.filename)
+            //fatalError("not implemented for url \(url.absoluteString)")
         }
     }
 }

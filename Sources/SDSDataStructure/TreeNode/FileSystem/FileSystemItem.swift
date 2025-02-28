@@ -22,6 +22,7 @@ public protocol FileSystemItemProtocol {
     func snapshot(contentType: UTType) throws -> Self
 }
 
+
 @DidChangeObject<FileSystemItemChange>
 open class FileSystemItem: Identifiable, ObservableObject { // Equatable?
     public let id = UUID()
@@ -29,10 +30,15 @@ open class FileSystemItem: Identifiable, ObservableObject { // Equatable?
         didSet { self.objectDidChange.send(.filenameChanged(oldValue)) }
     }
 
+    public typealias FileItemContentProvider = (String, FileWrapper) -> FileSystemItem.FileContent?
+
     @IsCheckEnum
     @AssociatedValueEnum
     public enum FileContent {
-        case directory, txtFile(String, Data), binFile(Data)
+        case directory
+        case txtFile(String, Data)
+        case binFile(Data)
+        case pathDirectFile
     }
     
     public private(set) var content: FileContent
@@ -43,41 +49,52 @@ open class FileSystemItem: Identifiable, ObservableObject { // Equatable?
         self.filename = dirname
     }
 
-    public init(filename: String, text: String) {
-        self.filename = filename
-        self.content = .txtFile(text, text.data(using: .utf8)!)
+    public convenience init(filename: String, text: String) {
+        self.init(filename: filename, content: .txtFile(text, text.data(using: .utf8)!))
     }
     
-    public init(filename: String, data: Data) {
+    public convenience init(filename: String, data: Data) {
+        self.init(filename: filename, content: .binFile(data))
+    }
+    
+    public convenience init(pathFilename: String) {
+        self.init(filename: pathFilename, content: .pathDirectFile)
+    }
+    
+    public init(filename: String, content: FileContent) {
         self.filename = filename
-        self.content = .binFile(data)
+        self.content = content
     }
 
     // init with file type detection
-    public convenience init?(filename: String, fileWrapper: FileWrapper, extraTextSuffixes: [String] = []) {
-        guard let fileData = fileWrapper.regularFileContents else { return nil }
+    public convenience init(filename: String, fileWrapper: FileWrapper, textFileSuffixes: [String] = []) {
+        guard fileWrapper.isRegularFile else { fatalError("can not handle directory/symbolic link") }
+        self.init(filename: filename, content: Self.appropriateContent(filename: filename, fileWrapper: fileWrapper, textFileSuffixes: textFileSuffixes))
+    }
+    
+    public static func appropriateContent(filename: String, fileWrapper: FileWrapper, textFileSuffixes: [String] = []) -> FileContent {
+        guard let fileData = fileWrapper.regularFileContents else { fatalError("can not handle directory/symbolic link") }
         if let subSuffix = filename.dotSuffix {
             let suffix = String(subSuffix)
 
             // try to check whether file can be handled as text file
-            if extraTextSuffixes.contains(suffix),
-                      let text = String(data: fileData, encoding: .utf8) {
-                self.init(filename: filename, text: text)
-                return
+            if textFileSuffixes.contains(suffix),
+               let text = String(data: fileData, encoding: .utf8) {
+                return FileContent.txtFile(text, fileData)
             } else if let utType = UTType(filenameExtension: suffix) {
                 if utType.conforms(to: .plainText),
                    let text = String(data: fileData, encoding: .utf8) {
-                    self.init(filename: filename, text: text)
-                    return
+                    return FileContent.txtFile(text, fileData)
                 }
             }
-
-            // not text file, so handle it as binday file
         }
+        return FileContent.binFile(fileData)
+    }
 
-        // no way to detect file type without suffix
-        self.init(filename: filename, data: fileData)
-        return
+    // init with contentProvider
+    public convenience init?(filename: String, fileWrapper: FileWrapper,_ contentProvider: FileItemContentProvider) {
+        guard let content = contentProvider(filename, fileWrapper) else { return nil }
+        self.init(filename: filename, content: content)
     }
     
     public var regularContent: Data? {
@@ -85,6 +102,7 @@ open class FileSystemItem: Identifiable, ObservableObject { // Equatable?
         case .directory:            return nil
         case .txtFile(_, let data): return data
         case .binFile(let data):    return data
+        case .pathDirectFile:       return nil
         }
     }
 }

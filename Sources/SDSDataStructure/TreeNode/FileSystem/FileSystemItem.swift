@@ -39,6 +39,24 @@ open class FileSystemItem: Identifiable, ObservableObject { // Equatable?
         case txtFile(String, Data)
         case binFile(Data)
         case pathDirectFile
+        public static func textContent(filename: String, fileWrapper: FileWrapper, textFileSuffixes: [String] = []) -> FileContent? {
+            guard let fileData = fileWrapper.regularFileContents else { return nil }
+            if let subSuffix = filename.dotSuffix {
+                let suffix = String(subSuffix)
+
+                // try to check whether file can be handled as text file
+                if textFileSuffixes.contains(suffix),
+                   let text = String(data: fileData, encoding: .utf8) {
+                    return FileContent.txtFile(text, fileData)
+                } else if let utType = UTType(filenameExtension: suffix) {
+                    if utType.conforms(to: .plainText),
+                       let text = String(data: fileData, encoding: .utf8) {
+                        return FileContent.txtFile(text, fileData)
+                    }
+                }
+            }
+            return nil
+        }
     }
     
     public private(set) var content: FileContent
@@ -69,28 +87,11 @@ open class FileSystemItem: Identifiable, ObservableObject { // Equatable?
     // init with file type detection
     public convenience init(filename: String, fileWrapper: FileWrapper, textFileSuffixes: [String] = []) {
         guard let data = fileWrapper.regularFileContents else { fatalError("can not handle directory/symbolic link") }
-        let content: FileContent = Self.textContent(filename: filename, fileWrapper: fileWrapper, textFileSuffixes: textFileSuffixes) ?? FileContent.binFile(data)
+        let content: FileContent = FileContent.textContent(filename: filename, fileWrapper: fileWrapper, textFileSuffixes: textFileSuffixes) ?? FileContent.binFile(data)
         self.init(filename: filename, content: content)
     }
     
-    public static func textContent(filename: String, fileWrapper: FileWrapper, textFileSuffixes: [String] = []) -> FileContent? {
-        guard let fileData = fileWrapper.regularFileContents else { return nil }
-        if let subSuffix = filename.dotSuffix {
-            let suffix = String(subSuffix)
 
-            // try to check whether file can be handled as text file
-            if textFileSuffixes.contains(suffix),
-               let text = String(data: fileData, encoding: .utf8) {
-                return FileContent.txtFile(text, fileData)
-            } else if let utType = UTType(filenameExtension: suffix) {
-                if utType.conforms(to: .plainText),
-                   let text = String(data: fileData, encoding: .utf8) {
-                    return FileContent.txtFile(text, fileData)
-                }
-            }
-        }
-        return nil
-    }
 
     // init with contentProvider
     public convenience init?(filename: String, fileWrapper: FileWrapper,_ contentProvider: FileItemContentProvider) {

@@ -32,8 +32,13 @@ extension TreeNode where T == FileSystemItem {
         return
     }
     
-    public convenience init(preferredFilename: String,_ fileWrapper: FileWrapper, itemContentProvider: ((String, FileWrapper) -> (FileSystemItem, FileWrapper)),
-                            shouldProcessThisDirectory: (any StringProtocol) -> Bool ) {
+    public convenience init(preferredFilename: String,_ fileWrapper: FileWrapper) {
+        guard fileWrapper.isDirectory else { fatalError("Not a directory") }
+        self.init(value: .init(directory: preferredFilename))
+        self.fileWrapper = fileWrapper
+    }
+    
+    public convenience init(preferredFilename: String,_ fileWrapper: FileWrapper, itemContentProvider: ItemContentProvider? = nil) {
         if fileWrapper.isDirectory {
             self.init(value: .init(directory: preferredFilename))
             self.fileWrapper = fileWrapper
@@ -41,40 +46,35 @@ extension TreeNode where T == FileSystemItem {
             guard let childFileWrappers = fileWrapper.fileWrappers else { return }
             for key in childFileWrappers.keys {
                 guard let childFileWrapper = childFileWrappers[key] else { continue }
-                if childFileWrapper.isDirectory,
-                   !shouldProcessThisDirectory(key) { continue }
-                let childNode = TreeNode.init(preferredFilename: key, childFileWrapper, itemContentProvider: itemContentProvider, shouldProcessThisDirectory: shouldProcessThisDirectory)
+                let childNode = TreeNode.init(preferredFilename: key, childFileWrapper, itemContentProvider: itemContentProvider)
                 addChildwithFileWrapper(childNode)
             }
-        } else {
-            let (ownFileItem, ownFileWrapper) = itemContentProvider(preferredFilename, fileWrapper)
+        } else if let (ownFileItem, ownFileWrapper) = itemContentProvider?(preferredFilename, fileWrapper) {
             self.init(value: ownFileItem)
+            parent?.fileWrapper.removeFileWrapper(fileWrapper)
             self.fileWrapper = ownFileWrapper
-        }
+        } else if let textContent = FileSystemItem.FileContent.textContent(filename: preferredFilename, fileWrapper: fileWrapper) {
+            self.init(value: FileSystemItem(filename: preferredFilename, content: textContent))
+            self.fileWrapper = fileWrapper
+        } else if let fileData = fileWrapper.regularFileContents {
+            self.init(value: FileSystemItem.init(filename: preferredFilename, data: fileData))
+            self.fileWrapper = fileWrapper
+        } else { fatalError("unknown")}
     }
     
-    public convenience init(preferredFilename: String,_ fileWrapper: FileWrapper) {
-        guard fileWrapper.isDirectory else { fatalError("Not a directory") }
-        self.init(value: .init(directory: preferredFilename))
-        self.fileWrapper = fileWrapper
-    }
-    
-    public func traceFileWrapper(_ itemContentProvider: ((String, FileWrapper) -> (FileSystemItem, FileWrapper)),
-                                 shouldProcessThisDirectory: (any StringProtocol) -> Bool,
-                                 shouldProcessThisFile: (any StringProtocol) -> Bool ) {
-        guard self.fileWrapper.isDirectory else { return } // should be processed earlier
-            
+    public typealias ItemContentProvider = ((String, FileWrapper) -> (FileSystemItem, FileWrapper)? )
+
+    // take care of children only (not myself)
+    public func setupTreeAlongFileWrappers( itemContentProvider: ItemContentProvider? = nil) {
+        guard fileWrapper.isDirectory else { return }
+
         guard let childFileWrappers = fileWrapper.fileWrappers else { return }
         for key in childFileWrappers.keys {
-            if let suffix = key.dotSuffix,
-               !shouldProcessThisFile(suffix) { print("skip \(key)"); continue }
             guard let childFileWrapper = childFileWrappers[key] else { continue }
-            guard (childFileWrapper.isDirectory || childFileWrapper.isRegularFile) else { continue }
-            if childFileWrapper.isDirectory,
-               !shouldProcessThisDirectory(key)  { continue }
-            let childNode = TreeNode.init(preferredFilename: key, childFileWrapper,
-                                          itemContentProvider: itemContentProvider,
-                                          shouldProcessThisDirectory: shouldProcessThisDirectory)
+            let childNode = TreeNode.init(preferredFilename: key, childFileWrapper, itemContentProvider: itemContentProvider)
+            if childFileWrapper != childNode.fileWrapper {
+                fileWrapper.removeFileWrapper(childFileWrapper)
+            }
             addChildwithFileWrapper(childNode)
         }
     }

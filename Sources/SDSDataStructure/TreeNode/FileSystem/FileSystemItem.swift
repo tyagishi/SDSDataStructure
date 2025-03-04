@@ -68,12 +68,13 @@ open class FileSystemItem: Identifiable, ObservableObject { // Equatable?
 
     // init with file type detection
     public convenience init(filename: String, fileWrapper: FileWrapper, textFileSuffixes: [String] = []) {
-        guard fileWrapper.isRegularFile else { fatalError("can not handle directory/symbolic link") }
-        self.init(filename: filename, content: Self.appropriateContent(filename: filename, fileWrapper: fileWrapper, textFileSuffixes: textFileSuffixes))
+        guard let data = fileWrapper.regularFileContents else { fatalError("can not handle directory/symbolic link") }
+        let content: FileContent = Self.textContent(filename: filename, fileWrapper: fileWrapper, textFileSuffixes: textFileSuffixes) ?? FileContent.binFile(data)
+        self.init(filename: filename, content: content)
     }
     
-    public static func appropriateContent(filename: String, fileWrapper: FileWrapper, textFileSuffixes: [String] = []) -> FileContent {
-        guard let fileData = fileWrapper.regularFileContents else { fatalError("can not handle directory/symbolic link") }
+    public static func textContent(filename: String, fileWrapper: FileWrapper, textFileSuffixes: [String] = []) -> FileContent? {
+        guard let fileData = fileWrapper.regularFileContents else { return nil }
         if let subSuffix = filename.dotSuffix {
             let suffix = String(subSuffix)
 
@@ -88,7 +89,7 @@ open class FileSystemItem: Identifiable, ObservableObject { // Equatable?
                 }
             }
         }
-        return FileContent.binFile(fileData)
+        return nil
     }
 
     // init with contentProvider

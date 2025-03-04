@@ -209,6 +209,21 @@ extension TreeNode where T == FileSystemItem {
         }
     }
     
+    public func updatePathDirectFile(with url: URL) {
+        if let urlFileWrapper = fileWrapper as? URLFileWrapper {
+            urlFileWrapper.readPathdirectFile(from: url)
+        }
+        for child in self.children {
+            if #available(macOS 13, *) {
+                let refPath = url.appending(path: child.filename)
+                child.updatePathDirectFile(with: refPath)
+            } else {
+                let refPath = url.appendingPathComponent(child.filename)
+                child.updatePathDirectFile(with: refPath)
+            }
+        }
+    }
+    
     public func addChildwithFileWrapper(_ node: TreeNode<T>, index: Int = -1) {
         addChild(node, index: index)
         self.fileWrapper.addFileWrapper(node.fileWrapper)
@@ -228,6 +243,14 @@ extension TreeNode where T == FileSystemItem {
     }
 }
 
+public protocol URLFileWrapper: FileWrapper {
+    func readPathdirectFile(from path: URL)
+}
+//// default empty implementation
+//extension URLFileWrapper {
+//    func readPathdirectFile(with path: URL) {}
+//}
+
 // for save
 extension FileSystemItem {
     public func snapshot(contentType: UTType) throws -> FileSystemItem {
@@ -240,7 +263,6 @@ extension FileSystemItem {
             return FileSystemItem(filename: self.filename, text: text)
         case .pathDirectFile:
             return FileSystemItem(pathFilename: self.filename)
-            //fatalError("not implemented for url \(url.absoluteString)")
         }
     }
 }

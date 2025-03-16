@@ -12,7 +12,7 @@ extension TreeNode where T == FileSystemItem {
         var pathComponents = path.split(separator: "/")
         var node: TreeNode<FileSystemItem> = self.rootNode()
         while let component = pathComponents.first {
-            guard let childNode = node.children.filter({$0.filename == component}).first else { return nil }
+            guard let childNode = node.children.filter({$0.filename == String(component)}).first else { return nil }
             node = childNode
             pathComponents.removeFirst()
         }

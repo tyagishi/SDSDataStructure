@@ -22,7 +22,6 @@ public protocol FileSystemItemProtocol {
     func snapshot(contentType: UTType) throws -> Self
 }
 
-
 @DidChangeObject<FileSystemItemChange>
 open class FileSystemItem: Identifiable, ObservableObject { // Equatable?
     public let id = UUID()
@@ -91,8 +90,6 @@ open class FileSystemItem: Identifiable, ObservableObject { // Equatable?
         self.init(filename: filename, content: content)
     }
     
-
-
     // init with contentProvider
     public convenience init?(filename: String, fileWrapper: FileWrapper,_ contentProvider: FileItemContentProvider) {
         guard let content = contentProvider(filename, fileWrapper) else { return nil }

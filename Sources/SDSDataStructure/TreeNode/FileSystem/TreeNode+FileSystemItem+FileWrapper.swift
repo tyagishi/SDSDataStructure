@@ -214,7 +214,7 @@ extension TreeNode where T == FileSystemItem {
             urlFileWrapper.readPathdirectFile(from: url)
         }
         for child in self.children {
-            if #available(macOS 13, *) {
+            if #available(iOS 16, macOS 13, *) {
                 let refPath = url.appending(path: child.filename)
                 child.updatePathDirectFile(with: refPath)
             } else {

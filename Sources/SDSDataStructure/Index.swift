@@ -8,7 +8,7 @@
 import Foundation
 
 // swiftlint:disable identifier_name
-struct Index2D<Element>: Hashable where Element: Hashable {
+public struct Index2D<Element>: Hashable where Element: Hashable {
     let x: Element
     let y: Element
     

@@ -5,8 +5,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/tyagishi/SDSMacros",
       "state" : {
-        "revision" : "25ee7d867fe55f9a717e1c6bcc05f2616407635c",
-        "version" : "2.0.0"
+        "revision" : "b9bc835e800b9f5c4be6441e767d4f0c30208ee9",
+        "version" : "3.0.3"
       }
     },
     {
@@ -21,10 +21,10 @@
     {
       "identity" : "swift-syntax",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/apple/swift-syntax.git",
+      "location" : "https://github.com/swiftlang/swift-syntax.git",
       "state" : {
-        "revision" : "2bc86522d115234d1f588efe2bcb4ce4be8f8b82",
-        "version" : "510.0.3"
+        "revision" : "4799286537280063c85a32f09884cfbca301b1a1",
+        "version" : "602.0.0"
       }
     },
     {

@@ -1,4 +1,4 @@
-// swift-tools-version: 5.7
+// swift-tools-version: 5.9
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
@@ -6,8 +6,8 @@ import PackageDescription
 let package = Package(
     name: "SDSDataStructure",
     platforms: [
-        .macOS(.v12),
-        .iOS(.v14)
+        .macOS(.v14),
+        .iOS(.v17)
     ],
     products: [
         // Products define the executables and libraries a package produces, and make them visible to other packages.
@@ -19,7 +19,6 @@ let package = Package(
         // Dependencies declare other packages that this package depends on.
         // .package(url: /* package url */, from: "1.0.0"),
         //.package(url: "https://github.com/apple/swift-docc-plugin", from: "1.0.0"),
-        .package(url: "https://github.com/tyagishi/SDSStringExtension", from: "1.3.1"),
         .package(url: "https://github.com/tyagishi/SDSMacros", from: "3.0.0"),
         .package(url: "https://github.com/SimplyDanny/SwiftLintPlugins", exact: "0.56.1"),
     ],
@@ -28,7 +27,7 @@ let package = Package(
         // Targets can depend on other targets in this package, and on products in packages this package depends on.
         .target(
             name: "SDSDataStructure",
-            dependencies: ["SDSStringExtension"],
+            dependencies: [],
             plugins: [
                 .plugin(name: "SDSMacros", package: "SDSMacros"),
                 .plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")

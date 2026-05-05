@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Observation
 
 /// ordered set with limited number
 ///
@@ -14,8 +15,8 @@ import Foundation
 /// note: currently LimitedOrderedSet uses Array as backing store
 ///       may switch to OrderedSet in swift-collections in the future
 ///
-public class LimitedOrderedSet<T: Equatable>: ObservableObject {
-    @Published public private(set) var array: [T]
+public class LimitedOrderedSet<T: Equatable> {
+    public private(set) var array: [T]
     let max: Int
     
     public init(_ selected: [T], max: Int) {
@@ -38,7 +39,6 @@ public class LimitedOrderedSet<T: Equatable>: ObservableObject {
     @discardableResult
     public func insert(_ newOne: T) -> Bool {
         guard !contains(newOne) else { return false }
-        objectWillChange.send()
         array.append(newOne)
         if array.count > max {
             array.removeFirst()
@@ -57,7 +57,6 @@ public class LimitedOrderedSet<T: Equatable>: ObservableObject {
     @discardableResult
     public func remove(_ existingOne: T) -> Bool {
         guard let index = array.firstIndex(where: { $0 == existingOne }) else { return false }
-        objectWillChange.send()
         array.remove(at: index)
         return true
     }

@@ -7,9 +7,9 @@
 
 import Foundation
 import SDSMacros
-import SDSStringExtension
 import UniformTypeIdentifiers
 import Combine
+import Observation
 
 public enum FileSystemItemChange {
     case filenameChanged(String)
@@ -22,8 +22,9 @@ public protocol FileSystemItemProtocol {
     func snapshot(contentType: UTType) throws -> Self
 }
 
+@Observable
 @DidChangeObject<FileSystemItemChange>
-open class FileSystemItem: Identifiable, ObservableObject { // Equatable?
+open class FileSystemItem: Identifiable { // Equatable?
     public let id = UUID()
     public var filename: String {
         didSet { self.objectDidChange.send(.filenameChanged(oldValue)) }
@@ -114,5 +115,14 @@ extension FileSystemItem {
     public func setData(_ newData: Data) {
         self.content = .binFile(newData)
         self.objectDidChange.send(.contentChanged(newData))
+    }
+}
+
+// note: copy from SDSStringExtension for less dependencies
+extension String {
+    public var dotSuffix: Substring? {
+        guard let dotIndex = self.lastIndex(of: ".") else { return nil }
+        let nextIndex = self.index(after: dotIndex)
+        return self[nextIndex...]
     }
 }

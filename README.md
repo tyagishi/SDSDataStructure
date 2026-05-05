@@ -2,6 +2,10 @@
 
 A description of this package.
 
+## support versions
+5.x: macOS 14/ iOS 17
+4.x: macOS 12/ iOS 14
+
 ## TreeNode
 tree node with comvenient methods
 - search specific node in tree (from root)

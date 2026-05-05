@@ -10,15 +10,6 @@
       }
     },
     {
-      "identity" : "sdsstringextension",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/tyagishi/SDSStringExtension",
-      "state" : {
-        "revision" : "e48553675cc2fee5d22176d133c6cce251dc5685",
-        "version" : "1.3.1"
-      }
-    },
-    {
       "identity" : "swift-syntax",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/swiftlang/swift-syntax.git",

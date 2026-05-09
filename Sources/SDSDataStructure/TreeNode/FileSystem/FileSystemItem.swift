@@ -105,6 +105,13 @@ open class FileSystemItem: Identifiable { // Equatable?
         case .pathDirectFile:       return nil
         }
     }
+    
+    public var text: String? {
+        switch content {
+        case .directory, .binFile, .pathDirectFile:  return nil
+        case .txtFile(let string,_):   return string
+        }
+    }
 }
 
 extension FileSystemItem {

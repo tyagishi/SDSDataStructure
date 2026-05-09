@@ -1,0 +1,33 @@
+{
+  "originHash" : "991fa6cb780d449741a45fdcdfc8c34a1f5cbedd96bc146d4201d84cd8f6aace",
+  "pins" : [
+    {
+      "identity" : "sdsmacros",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/tyagishi/SDSMacros",
+      "state" : {
+        "revision" : "18c1921f2df0a8ea5ee3447003385f37e3912b0b",
+        "version" : "3.0.4"
+      }
+    },
+    {
+      "identity" : "swift-syntax",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/swiftlang/swift-syntax.git",
+      "state" : {
+        "revision" : "4799286537280063c85a32f09884cfbca301b1a1",
+        "version" : "602.0.0"
+      }
+    },
+    {
+      "identity" : "swiftlintplugins",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/SimplyDanny/SwiftLintPlugins",
+      "state" : {
+        "revision" : "9ad9487c2448b3f1265ea2cc8af246b9cae6878d",
+        "version" : "0.56.1"
+      }
+    }
+  ],
+  "version" : 3
+}

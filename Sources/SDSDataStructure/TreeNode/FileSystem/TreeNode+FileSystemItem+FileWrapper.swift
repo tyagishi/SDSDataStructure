@@ -13,7 +13,7 @@ extension TreeNode where T == FileSystemItem {
     public var isDirectory: Bool { self.value.content.isDirectory }
     public var isTextFile: Bool { self.value.content.isTxtFile }
 
-    public convenience init(preferredFilename: String,_ fileWrapper: FileWrapper, textFileSuffixes: [String] = []) {
+    public convenience init?(preferredFilename: String,_ fileWrapper: FileWrapper, textFileSuffixes: [String] = []) {
         if fileWrapper.isDirectory {
             self.init(value: .init(directory: preferredFilename))
             self.fileWrapper = fileWrapper
@@ -21,23 +21,21 @@ extension TreeNode where T == FileSystemItem {
             guard let childFileWrappers = fileWrapper.fileWrappers else { return }
             for key in childFileWrappers.keys {
                 guard let childFileWrapper = childFileWrappers[key] else { continue }
-                let childNode = TreeNode.init(preferredFilename: key, childFileWrapper)
+                guard let childNode = TreeNode.init(preferredFilename: key, childFileWrapper, textFileSuffixes: []) else { continue }
                 addChildwithFileWrapper(childNode)
             }
             return
+        } else if fileWrapper.isRegularFile {
+            let content = FileSystemItem(filename: preferredFilename, fileWrapper: fileWrapper, textFileSuffixes: textFileSuffixes)
+            self.init(value: content)
+            self.fileWrapper = fileWrapper
+        } else {
+            // symbolic link is not supported
+            return nil
         }
-        let content = FileSystemItem(filename: preferredFilename, fileWrapper: fileWrapper, textFileSuffixes: textFileSuffixes)
-        self.init(value: content)
-        self.fileWrapper = fileWrapper
         return
     }
-    
-    public convenience init(preferredFilename: String,_ fileWrapper: FileWrapper) {
-        guard fileWrapper.isDirectory else { fatalError("Not a directory") }
-        self.init(value: .init(directory: preferredFilename))
-        self.fileWrapper = fileWrapper
-    }
-    
+
     public convenience init(preferredFilename: String,_ fileWrapper: FileWrapper, itemContentProvider: ItemContentProvider? = nil) {
         if fileWrapper.isDirectory {
             self.init(value: .init(directory: preferredFilename))

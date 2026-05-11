@@ -9,6 +9,7 @@ import Foundation
 import Combine
 import OSLog
 import SDSMacros
+import Observation
 
 extension Collection {
     subscript(safe index: Index) -> Element? {
@@ -39,6 +40,8 @@ public enum TreeNodeChange {
 /// node has children as child nodes
 /// node has optional parent and if it is null, it must be root node
 ///
+
+@Observable
 @DidChangeObject<TreeNodeChange>
 public class TreeNode<T>: NSObject, Identifiable, ObservableObject {
 

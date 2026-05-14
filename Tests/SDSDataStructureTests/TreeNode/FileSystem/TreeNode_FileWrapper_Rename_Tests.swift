@@ -11,7 +11,7 @@ import XCTest
 final class TreeNode_FileWrapper_Rename_Tests: XCTestCase {
 
     func test_FileWrapper_rename() async throws {
-        let root = TreeNode(preferredFilename: "root", FileWrapper(directoryWithFileWrappers: [:]))
+        let root = TreeNode(preferredFilename: "root", FileWrapper(directoryWithFileWrappers: [:]), itemContentProvider: nil)
         let intermid = root.addDirectory(dirName: "intermid")
         let leaf1 = intermid.addTextFile(fileName: "Leaf1.txt", text: "Hello")
         let leaf2 = intermid.addTextFile(fileName: "Leaf2.txt", text: "World")

@@ -8,9 +8,6 @@
 import XCTest
 
 final class UnderstandFileWrapperTests: XCTestCase {
-
-
-
     func test_changeParent() throws {
         let file1 = FileWrapper(regularFileWithContents: "Hello".data(using: .utf8)!)
         let file2 = FileWrapper(regularFileWithContents: "World".data(using: .utf8)!)
@@ -27,5 +24,23 @@ final class UnderstandFileWrapperTests: XCTestCase {
         parent1.removeFileWrapper(file2)
         let parent1Children_after = try XCTUnwrap(parent1.fileWrappers)
         XCTAssertEqual(parent1Children_after.count, 0)
+    }
+    
+    func test_pass_parentFW_checkKeepChildren() throws {
+        let file1 = FileWrapper(regularFileWithContents: "Hello".data(using: .utf8)!)
+        let file2 = FileWrapper(regularFileWithContents: "World".data(using: .utf8)!)
+        let parent1 = FileWrapper(directoryWithFileWrappers: ["HelloKey": file1,
+                                                              "WorldKey": file2])
+
+        let data = try XCTUnwrap(parent1.serializedRepresentation)
+        let recoveredFW = try XCTUnwrap(FileWrapper(serializedRepresentation: data))
+        
+        let childFWs = try XCTUnwrap(recoveredFW.fileWrappers)
+
+        XCTAssertEqual(childFWs.count, 2)
+        let child1 = try XCTUnwrap(childFWs["HelloKey"])
+        let child1ContentData = try XCTUnwrap(child1.regularFileContents)
+        let child1Content = try XCTUnwrap(String(data: child1ContentData, encoding: .utf8))
+        XCTAssertEqual(child1Content, "Hello")
     }
 }

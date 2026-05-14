@@ -10,7 +10,7 @@ import XCTest
 
 final class TreeNode_FileSystemItem_PathHandlingTests: XCTestCase {
     func prepRootNode() -> TreeNode<FileSystemItem> {
-        let root = TreeNode(preferredFilename: "root", FileWrapper(directoryWithFileWrappers: [:]))
+        let root = TreeNode(preferredFilename: "root", FileWrapper(directoryWithFileWrappers: [:]), itemContentProvider: nil)
         let intermid1 = root.addDirectory(dirName: "intermid1")
         let intermid2 = root.addDirectory(dirName: "intermid2")
         let _ = intermid1.addTextFile(fileName: "Leaf11.txt", text: "Hello Leaf11")
